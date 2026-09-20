@@ -1,0 +1,152 @@
+AR HR SUPPORT AND OPERATIONS GUIDE
+
+This guide describes the principal policies, procedures, and features available in Ar HR. It is intended for employees, managers, company administrators, payroll teams, and support personnel. Company-specific policies may override some default platform settings, but the procedures described here represent the standard Ar HR configuration.
+
+## Account Access and Password Recovery
+
+Employees access Ar HR using the email address registered by their company administrator. The email address acts as the unique identifier for the account and must be verified before the user can access confidential employment information.
+
+An employee who forgets a password can begin the recovery process from the login page. The employee must select the “Forgot password” link and enter the registered email address. Ar HR then sends a password reset message to that address. For security reasons, the reset link remains valid for 30 minutes. If the link expires, the employee must return to the login page and request another one.
+
+When a reset email does not arrive, the employee should first check the spam or junk folder and confirm that the correct email address was entered. The employee should wait several minutes before requesting another message. If the problem continues, the company administrator should verify the email address assigned to the account.
+
+Ar HR temporarily locks an account after five consecutive failed login attempts. The lock lasts 15 minutes and prevents additional login attempts during that period. Employees should wait until the lock expires or use the password recovery process instead of repeatedly entering possible passwords.
+
+Employees cannot directly replace the primary email address associated with their account. An authorized company administrator must make the change. After the administrator enters the new address, Ar HR sends a verification message before activating it.
+
+## Two-Factor Authentication and Security
+
+Two-factor authentication adds a second verification step to the login process. Employees can enable it by opening Settings, selecting Security, and choosing the two-factor authentication option. Ar HR supports authentication applications and SMS verification codes.
+
+After connecting an authentication method, the employee receives recovery codes. These codes must be stored in a secure location and must not be shared with other people. A recovery code can be used when the employee temporarily loses access to the normal authentication method.
+
+Company administrators may require two-factor authentication for every user in the organization. When this requirement is enabled, users who have not configured a second factor are prompted to complete the setup during their next login.
+
+Users should never share passwords, verification codes, recovery codes, or active sessions. A suspected unauthorized login must be reported immediately to the company administrator. The employee should also change the password and review the recent account activity displayed in the Security section.
+
+## Time Off and Leave Management
+
+Full-time employees accrue 1.25 vacation days for each completed month of employment. This provides a standard total of 15 vacation days per year. The current available, used, pending, and carried-over balances are displayed in the Time Off section.
+
+Employees may carry a maximum of five unused vacation days into the following calendar year. Carried-over days must be used before March 31. Any carried-over balance remaining after that date expires unless local legislation or a separate company policy requires another arrangement.
+
+To submit a time-off request, the employee must complete the following procedure:
+
+1. Open Time Off from the main navigation.
+2. Select New Request.
+3. Choose the appropriate type of leave.
+4. Enter the start and end dates.
+5. Add any relevant comment or attachment.
+6. Review the requested dates and submit the request.
+
+The employee’s manager should review a request within three business days. Ar HR sends a notification when the request is approved, rejected, or returned for additional information. A pending request does not guarantee that the absence has been authorized.
+
+An approved request can be cancelled before its scheduled start date. The employee must open the request and select Cancel Request. After the leave has started, the employee must contact a manager or HR administrator because the request can no longer be cancelled directly.
+
+Employees taking sick leave should notify their manager and record the absence on the same day. A medical certificate is required when the absence lasts more than two consecutive working days. The certificate can be uploaded as an attachment to the corresponding leave record.
+
+## Payroll and Payslips
+
+Monthly payslips become available on the last business day of each month. Ar HR notifies employees when a new document has been published. The publication of a payslip does not necessarily mean that the bank transfer has already been completed.
+
+Employees can access previous documents by opening Payroll and selecting Payslips. The list can be filtered by year and month. Selecting Download PDF creates a local copy of the chosen document. Ar HR retains published payslips for five years. Missing or older documents must be requested from the payroll administrator.
+
+Bank information can be updated from Profile and Payment Information. Changes submitted before the twentieth day of the month apply to that month’s payroll when they are approved in time. Changes submitted after the twentieth normally apply to the following month. Some organizations require an administrator to approve all bank account modifications.
+
+A suspected salary error must be reported through a support request using the Payroll category. The request should be created within five business days of receiving the payment and should identify the affected payroll period. Employees must not include complete banking credentials, passwords, or other unnecessary sensitive information.
+
+The payroll team reviews the published payslip, approved changes, deductions, and payment record. Resolution time depends on the cause of the discrepancy and whether an external bank or payroll provider must be contacted.
+
+## Benefits Administration
+
+New employees have 30 days from their employment start date to enroll in available company benefits. Employees can also update selections during the annual open enrollment period in November.
+
+Changes outside these periods normally require a qualifying life event. Qualifying events include marriage, divorce, birth, adoption, and loss of other health coverage. Supporting documentation must be provided within 30 days of the event.
+
+To add a dependent, the employee opens Benefits, selects the active plan, and chooses Add Dependent. The employee enters the required personal information and uploads the requested documentation. A benefits administrator reviews the submission before the updated coverage becomes active.
+
+Eligible full-time employees receive a professional development allowance of up to USD 800 per calendar year. The allowance may be used for approved courses, certifications, conferences, and professional books. Manager approval is required before the purchase. The employee must submit the receipt through the Expenses section.
+
+Unused professional development funds do not carry into the following calendar year. Purchases must have a clear relationship to the employee’s current role or an approved development plan.
+
+## Employee Onboarding
+
+The onboarding process begins after the company administrator creates the employee record. Before the first working day, the employee must provide a valid identity document, the required tax forms, and bank account information. The precise tax documentation depends on the employee’s country and employment arrangement.
+
+Documents must be uploaded through the secure onboarding checklist. Employees should not send identity documents or bank information through ordinary email. Access to uploaded documents is limited according to role-based permissions.
+
+Managers request equipment from the employee’s onboarding record. The request should specify the required computer, accessories, software, and delivery address. It must be submitted at least five business days before the employment start date so the IT team has enough time to prepare or ship the equipment.
+
+The employee can find the onboarding checklist under Home and My Tasks. It may include document uploads, policy acknowledgements, security training, introductory meetings, and equipment confirmation. Completed tasks can be marked as done, while tasks requiring approval remain pending until an authorized person reviews them.
+
+## Performance Reviews
+
+Standard performance review cycles take place twice each year, in June and December. Ar HR notifies employees and managers when a review cycle opens and displays the submission deadline in the Performance section.
+
+An employee begins a self-evaluation by opening the active review cycle and selecting Start Self-Evaluation. Each competency should be rated using the displayed scale. The employee should describe relevant achievements, provide evidence, and identify development areas. A draft can be saved before submission.
+
+After the employee submits the self-evaluation, it becomes available to the manager. The manager completes a separate assessment and schedules a review conversation. Submitted evaluations cannot normally be edited unless an administrator reopens the form.
+
+For 360-degree feedback, the employee or manager nominates between three and five colleagues who have sufficient knowledge of the employee’s work. The manager approves the final participant list. Responses are confidential and are presented anonymously unless the organization has explicitly configured another policy.
+
+## Expense Management
+
+Employees must submit business expenses within 30 days of the purchase. Each expense record must include the date, amount, currency, merchant, category, business purpose, and a clear image of the receipt. A receipt is required for every expense regardless of the amount, unless local regulations establish a documented exception.
+
+To create an expense, the employee opens Expenses, selects New Expense, completes the required fields, attaches the receipt, and submits the record for review. The assigned manager or finance reviewer may approve it, reject it, or return it for additional information.
+
+Approved expenses are normally reimbursed with the next payroll payment. The expense record displays whether it is submitted, under review, approved, rejected, or paid. If an approved expense does not appear in the expected payment, the employee should contact payroll and provide the expense reference.
+
+The standard reimbursement limit for business meals is USD 50 per person per day. An itemized receipt and the business purpose are required. When other people attended the meal, their names should be included. An amount above the limit requires additional approval and may be only partially reimbursed.
+
+## Remote Work
+
+Eligible employees may work remotely for up to three days per week. The specific schedule must be agreed with the employee’s manager and should not conflict with required office meetings, customer commitments, or operational needs.
+
+Some positions may require more frequent on-site attendance because they depend on physical equipment, secure facilities, direct customer interaction, or regulatory requirements. The remote work policy does not automatically apply to every role.
+
+Eligible remote employees may receive a one-time home-office equipment allowance of up to USD 300. Approved purchases include items such as a monitor, keyboard, headset, or ergonomic chair. Manager approval should be obtained before the purchase.
+
+Receipts for home-office equipment must be submitted through the Expenses section. Equipment supplied directly by the company remains company property and must be returned when requested or when employment ends.
+
+## Data Privacy and Security
+
+Ar HR protects stored customer information using AES-256 encryption. Data transmitted between users and the platform is protected using TLS 1.2 or later. Access to employment information is controlled through role-based access control.
+
+Company administrators are responsible for assigning appropriate roles and regularly reviewing administrator access. Employees should receive only the permissions necessary for their responsibilities. Changes in position or employment status should trigger an access review.
+
+An authorized company administrator can request a GDPR data export by opening Settings, selecting Privacy, and choosing Data Export. Ar HR verifies the requester’s permissions before processing the request. The export is prepared within 30 days and is delivered through a secure, time-limited download link.
+
+Suspicious messages should not be opened beyond what is necessary to identify them. Users must not select unknown links, download unexpected attachments, or provide credentials. A suspected phishing message should be forwarded as an attachment to security@Arhr.example and reported to the company administrator.
+
+If credentials may have been exposed, the employee must change the password immediately, enable two-factor authentication, and review recent account activity.
+
+## Integrations and Mobile Access
+
+Ar HR supports integrations with Slack, Google Workspace, Microsoft 365, and QuickBooks. Available integrations depend on the organization’s subscription plan and the permissions of the administrator.
+
+Administrators manage connections from Settings and Integrations. Before enabling a service, the administrator should review the data permissions requested by the integration. Disconnecting an integration prevents future synchronization but may not delete information already transferred to the external service.
+
+SAML 2.0 single sign-on is available with Business and Enterprise plans. An administrator must configure identity provider metadata, company domains, and user attributes. The connection should be tested before SSO becomes mandatory for every employee.
+
+The Ar HR mobile application is available for iOS and Android. Employees can view payslips, check leave balances, submit time-off requests, complete assigned tasks, and receive notifications. Advanced administrative settings and bulk operations remain available only through the web application.
+
+## Plans and Billing
+
+Ar HR offers Starter, Business, and Enterprise subscription plans. Pricing is calculated according to the number of active employees and the features included in the selected plan.
+
+The Business plan includes advanced reporting, integrations, and SAML single sign-on. The Enterprise plan includes additional security controls, implementation assistance, and a shorter support response target.
+
+Invoices are issued on the first day of each month and cover the active employees and services included in that billing period. Billing administrators can download invoices from Settings and Billing.
+
+A company must provide 30 days of notice to cancel a subscription. After the subscription ends, users lose normal platform access. Customer data is retained for 90 days to allow an authorized export or reactivation. After the retention period, the information is scheduled for deletion according to the applicable agreement.
+
+## Customer Support
+
+Ar HR support is available Monday through Friday from 9:00 to 18:00 GMT-3, excluding published holidays. Customers can use the in-application chat or send an email to support@Arhr.example.
+
+A support request should include a clear description of the problem, the affected feature, relevant timestamps, steps already attempted, and screenshots that do not expose sensitive information.
+
+Business plan customers have an initial response target of four business hours. Enterprise customers have an initial response target of one business hour. These targets indicate the expected time to the first response and do not guarantee complete resolution within that period.
+
+Urgent priority should be used when many users cannot access a critical function, payroll processing is blocked, or a security incident is suspected. General questions, minor display problems, and noncritical issues affecting a single user should use normal priority.
