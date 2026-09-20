@@ -1,0 +1,1 @@
+"""FAQ RAG chatbot application package."""
