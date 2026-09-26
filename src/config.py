@@ -11,6 +11,8 @@ ENV_PATH = BASE_DIR / ".env"
 DATA_DIR = BASE_DIR / "data"
 DOCUMENT_PATH = DATA_DIR / "faq_document.txt"
 INDEX_PATH = DATA_DIR / "index.json"
+DEFAULT_LLM_MODEL = "gpt-4o-mini"
+DEFAULT_MAX_OUTPUT_TOKENS = 400
 
 load_dotenv(ENV_PATH)
 
@@ -39,6 +41,29 @@ def get_openai_timeout() -> float:
 
     return timeout
 
+def get_llm_model() -> str:
+    return os.getenv("LLM_MODEL", DEFAULT_LLM_MODEL)
+
+
+def get_max_output_tokens() -> int:
+    value = os.getenv(
+        "MAX_OUTPUT_TOKENS",
+        str(DEFAULT_MAX_OUTPUT_TOKENS),
+    )
+
+    try:
+        max_output_tokens = int(value)
+    except ValueError as error:
+        raise ValueError(
+            "MAX_OUTPUT_TOKENS must be an integer."
+        ) from error
+
+    if max_output_tokens <= 0:
+        raise ValueError(
+            "MAX_OUTPUT_TOKENS must be greater than zero."
+        )
+
+    return max_output_tokens
 
 def get_openai_client() -> OpenAI:
     """Create an authenticated OpenAI client."""
