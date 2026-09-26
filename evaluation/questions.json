@@ -1,0 +1,67 @@
+[
+  {
+    "id": "eval_001",
+    "question": "How can I recover access if I forget my password?",
+    "expected_section": "Account Access and Password Recovery"
+  },
+  {
+    "id": "eval_002",
+    "question": "How does two-factor authentication protect my account?",
+    "expected_section": "Two-Factor Authentication and Security"
+  },
+  {
+    "id": "eval_003",
+    "question": "How should an employee request time off?",
+    "expected_section": "Time Off and Leave Management"
+  },
+  {
+    "id": "eval_004",
+    "question": "Where can employees find information about their salary payments?",
+    "expected_section": "Payroll and Payslips"
+  },
+  {
+    "id": "eval_005",
+    "question": "Where can employees review their available benefits?",
+    "expected_section": "Benefits Administration"
+  },
+  {
+    "id": "eval_006",
+    "question": "What happens during the employee onboarding process?",
+    "expected_section": "Employee Onboarding"
+  },
+  {
+    "id": "eval_007",
+    "question": "How are employee performance reviews managed?",
+    "expected_section": "Performance Reviews"
+  },
+  {
+    "id": "eval_008",
+    "question": "How should an employee submit a work expense?",
+    "expected_section": "Expense Management"
+  },
+  {
+    "id": "eval_009",
+    "question": "What should employees consider when working remotely?",
+    "expected_section": "Remote Work"
+  },
+  {
+    "id": "eval_010",
+    "question": "How does AR HR protect employee information?",
+    "expected_section": "Data Privacy and Security"
+  },
+  {
+    "id": "eval_011",
+    "question": "Can employees access AR HR from a mobile device?",
+    "expected_section": "Integrations and Mobile Access"
+  },
+  {
+    "id": "eval_012",
+    "question": "Where can customers find information about subscriptions and charges?",
+    "expected_section": "Plans and Billing"
+  },
+  {
+    "id": "eval_013",
+    "question": "How can a user contact AR HR for assistance?",
+    "expected_section": "Customer Support"
+  }
+]
