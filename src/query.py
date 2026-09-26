@@ -2,6 +2,7 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any
+import sys
 
 from src.config import (
     get_embedding_model,
@@ -13,6 +14,7 @@ from src.embeddings import generate_embeddings
 from src.rag_service import answer_question
 from src.retrieval import search_similar_chunks
 from src.vector_store import load_index
+from src.errors import format_error
 
 DEFAULT_INDEX_PATH = Path("data/index.json")
 DEFAULT_TOP_K = 3
@@ -76,11 +78,18 @@ def parse_arguments() -> argparse.Namespace:
 def main() -> None:
     args = parse_arguments()
 
-    result = run_query(
-        question=args.question,
-        index_path=args.index,
-        top_k=args.top_k,
-    )
+    try:
+        result = run_query(
+            question=args.question,
+            index_path=args.index,
+            top_k=args.top_k,
+        )
+    except Exception as error:
+        print(
+            format_error(error),
+            file=sys.stderr,
+        )
+        raise SystemExit(1) from error
 
     print(
         json.dumps(

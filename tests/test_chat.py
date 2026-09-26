@@ -112,3 +112,38 @@ def test_exit_command_is_case_insensitive():
     )
 
     assert outputs[-1] == GOODBYE_MESSAGE
+
+def test_chat_continues_after_query_error():
+    answers = iter(
+        [
+            "First question",
+            "Second question",
+            "exit",
+        ]
+    )
+    outputs = []
+    call_count = 0
+
+    def fake_ask_question(question):
+        nonlocal call_count
+        call_count += 1
+
+        if call_count == 1:
+            raise ValueError("Temporary query error.")
+
+        return {
+            "user_question": question,
+            "system_answer": "Successful answer.",
+            "chunks_related": [],
+        }
+
+    run_chat(
+        ask_question=fake_ask_question,
+        input_function=lambda prompt: next(answers),
+        output_function=outputs.append,
+    )
+
+    assert call_count == 2
+    assert '"error": "Temporary query error."' in outputs[1]
+    assert '"system_answer": "Successful answer."' in outputs[2]
+    assert outputs[-1] == GOODBYE_MESSAGE

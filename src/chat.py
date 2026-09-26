@@ -3,6 +3,7 @@ from collections.abc import Callable
 from typing import Any
 
 from src.query import run_query
+from src.errors import format_error
 
 EXIT_COMMANDS = {"exit", "quit"}
 
@@ -40,7 +41,12 @@ def run_chat(
             output_function(EMPTY_QUESTION_MESSAGE)
             continue
 
-        result = ask_question(question)
+        try:
+            result = ask_question(question)
+        except Exception as error:
+            output_function(format_error(error))
+            continue
+
         output_function(format_result(result))
 
 def main() -> None:
