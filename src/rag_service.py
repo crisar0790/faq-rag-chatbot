@@ -5,7 +5,7 @@ from src.rag_output import build_rag_output
 
 def answer_question(
     question: str,
-    index: list[dict[str, Any]],
+    index: dict[str, Any],
     client: Any,
     embedding_model: str,
     llm_model: str,
