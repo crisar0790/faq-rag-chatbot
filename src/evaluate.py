@@ -353,13 +353,11 @@ def run_evaluation(dataset_path: Path, index_path: Path, report_path: Path, top_
 
     return report
 
-
-def parse_arguments() -> argparse.Namespace:
-    """Parse command-line arguments for the evaluation command."""
+def _build_evaluation_parser() -> argparse.ArgumentParser:
+    """Create the command-line parser for RAG evaluation."""
     parser = argparse.ArgumentParser(
         description="Evaluate the AR HR FAQ RAG system."
     )
-
     parser.add_argument(
         "--dataset",
         type=Path,
@@ -375,11 +373,7 @@ def parse_arguments() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_REPORT_PATH,
     )
-    parser.add_argument(
-        "--top-k",
-        type=int,
-        default=3,
-    )
+    parser.add_argument("--top-k", type=int, default=3)
     parser.add_argument(
         "--limit",
         type=int,
@@ -387,7 +381,11 @@ def parse_arguments() -> argparse.Namespace:
         help="Evaluate only the first N cases.",
     )
 
-    return parser.parse_args()
+    return parser
+
+def parse_arguments() -> argparse.Namespace:
+    """Parse command-line arguments for the evaluation command."""
+    return _build_evaluation_parser().parse_args()
 
 
 def main() -> None:

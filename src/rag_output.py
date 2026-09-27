@@ -38,6 +38,35 @@ def validate_nonblank_text(value: Any, field_name: str) -> None:
             f"{field_name} must not be blank."
         )
 
+def _validate_related_chunk(chunk: Any) -> None:
+    """Validate the structure and fields of one public chunk."""
+    if not isinstance(chunk, dict):
+        raise ValueError(
+            "Every related chunk must be an object."
+        )
+
+    if set(chunk) != REQUIRED_CHUNK_KEYS:
+        raise ValueError(
+            "Each related chunk must contain exactly "
+            "chunk_id, section, and text."
+        )
+
+    for key in REQUIRED_CHUNK_KEYS:
+        validate_nonblank_text(chunk[key], key)
+
+
+def _validate_unique_chunk_ids(chunks: list[dict[str, Any]]) -> None:
+    """Ensure related chunks have unique identifiers."""
+    chunk_ids = [
+        chunk["chunk_id"]
+        for chunk in chunks
+    ]
+
+    if len(chunk_ids) != len(set(chunk_ids)):
+        raise ValueError(
+            "Related chunk identifiers must be unique."
+        )
+
 def validate_related_chunks(chunks: Any) -> None:
     """Validate the public related chunk collection."""
     if not isinstance(chunks, list):
@@ -50,30 +79,10 @@ def validate_related_chunks(chunks: Any) -> None:
             "chunks_related must contain between 2 and 5 chunks."
         )
 
-    chunk_ids: list[str] = []
-
     for chunk in chunks:
-        if not isinstance(chunk, dict):
-            raise ValueError(
-                "Every related chunk must be an object."
-            )
+        _validate_related_chunk(chunk)
 
-        if set(chunk) != REQUIRED_CHUNK_KEYS:
-            raise ValueError(
-                "Each related chunk must contain exactly "
-                "chunk_id, section, and text."
-            )
-
-        for key in REQUIRED_CHUNK_KEYS:
-            validate_nonblank_text(chunk[key], key)
-
-        chunk_ids.append(chunk["chunk_id"])
-
-    if len(chunk_ids) != len(set(chunk_ids)):
-        raise ValueError(
-            "Related chunk identifiers must be unique."
-        )
-
+    _validate_unique_chunk_ids(chunks)
 
 def validate_rag_output(output: Any) -> None:
     """Validate the complete public RAG output."""

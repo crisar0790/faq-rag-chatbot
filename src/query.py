@@ -48,30 +48,24 @@ def run_query(question: str, index_path: Path = DEFAULT_INDEX_PATH, top_k: int =
         top_k=top_k,
     )
 
-def parse_arguments() -> argparse.Namespace:
-    """Parse command-line arguments for an individual FAQ query."""
+def _build_argument_parser() -> argparse.ArgumentParser:
+    """Create the command-line parser for individual queries."""
     parser = argparse.ArgumentParser(
         description=(
             "Ask a question using the AR HR FAQ "
             "knowledge base."
         )
     )
-
     parser.add_argument(
         "question",
         help="Question to answer using the FAQ document.",
     )
-
     parser.add_argument(
         "--index",
         type=Path,
         default=DEFAULT_INDEX_PATH,
-        help=(
-            "Path to the vector index. "
-            "Default: data/index.json"
-        )
+        help="Path to the vector index. Default: data/index.json",
     )
-
     parser.add_argument(
         "--top-k",
         type=int,
@@ -79,7 +73,11 @@ def parse_arguments() -> argparse.Namespace:
         help="Number of chunks to retrieve. Default: 3",
     )
 
-    return parser.parse_args()
+    return parser
+
+def parse_arguments() -> argparse.Namespace:
+    """Parse command-line arguments for an individual FAQ query."""
+    return _build_argument_parser().parse_args()
 
 def main() -> None:
     """Execute the command-line query and print its JSON result."""
