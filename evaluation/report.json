@@ -3,10 +3,10 @@
     "total_cases": 13,
     "retrieval_passed": 13,
     "retrieval_accuracy": 1.0,
-    "answer_passed": 13,
-    "answer_accuracy": 1.0,
-    "fully_passed": 13,
-    "overall_accuracy": 1.0
+    "answer_passed": 12,
+    "answer_accuracy": 0.9231,
+    "fully_passed": 12,
+    "overall_accuracy": 0.9231
   },
   "results": [
     {
@@ -18,12 +18,12 @@
         "Two-Factor Authentication and Security"
       ],
       "retrieval_passed": true,
-      "system_answer": "To recover access if you forget your password, go to the login page and select the \"Forgot password\" link. Then, enter your registered email address. Ar HR will send a password reset message to that address. Remember that the reset link will be valid for 30 minutes. If it expires, you will need to request a new one.",
+      "system_answer": "To recover access if you forget your password, go to the login page and select the \"Forgot password\" link. Enter your registered email address, and Ar HR will send a password reset message to that address. The reset link is valid for 30 minutes. If it expires, return to the login page and request another one.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer provides a clear and direct method for recovering access if the password is forgotten, using the steps outlined in the retrieved context. It includes all necessary information about using the 'Forgot password' link and the details regarding the password reset link's validity, making it both relevant and complete."
+        "explanation": "The answer accurately describes the password recovery process as detailed in the retrieved context, directly addressing the user's question without omitting any important steps or details."
       },
       "answer_passed": true,
       "passed": true
@@ -37,12 +37,12 @@
         "Data Privacy and Security"
       ],
       "retrieval_passed": true,
-      "system_answer": "Two-factor authentication protects your account by adding a second verification step to the login process, making it more difficult for unauthorized users to gain access. It supports authentication applications and SMS verification codes, requiring you to confirm your identity through a method beyond just your password. This additional layer of security helps safeguard your account against potential breaches.",
+      "system_answer": "Two-factor authentication adds a second verification step to the login process, which enhances the security of your account. It requires not only your password but also a second form of verification, such as an authentication application or SMS verification code. This makes it significantly harder for unauthorized users to access your account, even if they have your password.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The system answer accurately describes how two-factor authentication works and its benefits, all of which are supported by the retrieved context. It addresses the user's question directly by outlining the additional verification step and its role in increasing security."
+        "explanation": "The answer accurately explains the concept of two-factor authentication, including the requirement for both a password and an additional verification step (authentication application or SMS code). It highlights the security benefits of this method, which aligns with the information provided in the retrieved context."
       },
       "answer_passed": true,
       "passed": true
@@ -56,12 +56,12 @@
         "Employee Onboarding"
       ],
       "retrieval_passed": true,
-      "system_answer": "To request time off, an employee should:\n1. Open Time Off from the main navigation.\n2. Select New Request.\n3. Choose the appropriate type of leave.\n4. Enter the start and end dates.\n5. Add any relevant comment or attachment.\n6. Review the requested dates and submit the request.",
+      "system_answer": "An employee should request time off by following these steps:\n1. Open Time Off from the main navigation.\n2. Select New Request.\n3. Choose the appropriate type of leave.\n4. Enter the start and end dates.\n5. Add any relevant comment or attachment.\n6. Review the requested dates and submit the request.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer provides a complete step-by-step procedure for requesting time off, fully supported by the retrieved context. It directly addresses the user's question and includes all necessary information without any unsupported details."
+        "explanation": "The answer accurately reflects the steps outlined in the retrieved context for requesting time off, addressing the user's question directly without adding unsupported details."
       },
       "answer_passed": true,
       "passed": true
@@ -75,12 +75,12 @@
         "Integrations and Mobile Access"
       ],
       "retrieval_passed": true,
-      "system_answer": "Employees can find information about their salary payments on their monthly payslips, which become available on the last business day of each month. They can access previous payslips by opening Payroll and selecting Payslips.",
+      "system_answer": "Employees can find information about their salary payments by accessing their monthly payslips, which become available on the last business day of each month. They can view previous payslips by opening Payroll and selecting Payslips, where the list can be filtered by year and month.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer accurately reflects the information in the retrieved context, specifically explaining when and how employees can access their monthly payslips. It addresses the user's question directly by providing complete and relevant details without unsupported claims."
+        "explanation": "The answer accurately summarizes the context provided about where employees can find information on their salary payments, specifically through monthly payslips available on the last business day of the month and how to access previous payslips."
       },
       "answer_passed": true,
       "passed": true
@@ -95,12 +95,12 @@
         "Integrations and Mobile Access"
       ],
       "retrieval_passed": true,
-      "system_answer": "The context does not provide information on where employees can review their available benefits.",
+      "system_answer": "Employees can review their available benefits by opening the Benefits section in the AR HR application.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The system answer correctly states that the retrieved context does not provide information on where employees can review their available benefits. It directly addresses the user's question and does not add unsupported details."
+        "explanation": "The answer directly addresses the user's question about where employees can review their available benefits and is fully supported by the retrieved context."
       },
       "answer_passed": true,
       "passed": true
@@ -113,12 +113,12 @@
         "Employee Onboarding"
       ],
       "retrieval_passed": true,
-      "system_answer": "During the employee onboarding process, the employee receives an onboarding checklist that may include tasks such as document uploads, policy acknowledgements, security training, introductory meetings, and equipment confirmation. The process begins after the company administrator creates the employee record. Before the first working day, the employee must provide a valid identity document, required tax forms, and bank account information, which should be uploaded securely rather than sent via email. Tasks on the checklist can be marked as done, while those requiring approval remain pending. Additionally, managers request necessary equipment at least five business days before the employment start date.",
+      "system_answer": "The employee onboarding process begins after the company administrator creates the employee record. Before the first working day, the employee must provide a valid identity document, required tax forms, and bank account information. The onboarding checklist includes tasks such as document uploads, policy acknowledgements, security training, introductory meetings, and equipment confirmation. Employees can mark completed tasks as done, while tasks requiring approval remain pending. Equipment requests from managers must specify details and be submitted at least five business days before the start date.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer is well-grounded in the retrieved context, accurately reflecting the onboarding process, including the checklist, required documents, and equipment requests. It directly addresses the user's question and includes all important information without unsupported details."
+        "explanation": "The answer accurately reflects the information from the retrieved context regarding the steps and requirements in the employee onboarding process, covering document submissions, the onboarding checklist, and equipment requests."
       },
       "answer_passed": true,
       "passed": true
@@ -132,12 +132,12 @@
         "Data Privacy and Security"
       ],
       "retrieval_passed": true,
-      "system_answer": "Employee performance reviews are managed through standard cycles that take place twice a year, in June and December. Ar HR notifies employees and managers when a review cycle opens and provides submission deadlines. Employees begin their self-evaluation by selecting Start Self-Evaluation, rating competencies, describing achievements, providing evidence, and identifying development areas. They can save a draft before submitting. After submission, the self-evaluation is available to the manager, who completes a separate assessment and schedules a review conversation. Submitted evaluations cannot be edited unless an administrator reopens the form. Additionally, for 360-degree feedback, employees or managers nominate colleagues for feedback, with the manager approving the final list and responses remaining confidential unless otherwise configured.",
+      "system_answer": "Employee performance reviews are managed through a cycle that occurs twice a year, in June and December. Ar HR notifies employees and managers when a review cycle opens and specifies the submission deadline. Employees begin their self-evaluation by selecting 'Start Self-Evaluation' within the active review cycle, rating competencies, describing achievements, and identifying development areas. A draft can be saved before submission.\n\nAfter submission, the self-evaluation is accessible to the manager, who completes a separate assessment and schedules a review conversation. Submitted evaluations typically cannot be edited unless an administrator reopens the form. Additionally, for 360-degree feedback, employees or managers nominate colleagues for feedback, approved by the manager, with responses remaining confidential and anonymous.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer accurately reflects the information from the retrieved context regarding how employee performance reviews are managed, including the timing, process, and additional aspects like 360-degree feedback. It stays focused on the user's question without adding unsupported details."
+        "explanation": "The answer effectively summarizes the key processes of employee performance reviews as described in the retrieved context. It mentions the timing of reviews, the self-evaluation process, the manager's role, and the procedure for 360-degree feedback, ensuring that all critical points from the context are covered without any unsupported additions."
       },
       "answer_passed": true,
       "passed": true
@@ -150,15 +150,15 @@
         "Expense Management"
       ],
       "retrieval_passed": true,
-      "system_answer": "An employee should submit a work expense by opening Expenses, selecting New Expense, completing the required fields, attaching the receipt, and then submitting the record for review.",
+      "system_answer": "An employee should submit a work expense by opening Expenses, selecting New Expense, completing the required fields, attaching the receipt, and submitting the record for review.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
-        "complete": true,
-        "explanation": "The answer accurately reflects the information provided in the retrieved context about the process an employee should follow to submit a work expense, including the steps of opening Expenses, selecting New Expense, completing the fields, attaching the receipt, and submitting for review."
+        "complete": false,
+        "explanation": "The answer correctly outlines the steps for submitting a work expense, which is grounded in the retrieved context. However, it lacks important information such as the requirement to submit expenses within 30 days and the necessary details to include in the expense record, which are also part of the context."
       },
-      "answer_passed": true,
-      "passed": true
+      "answer_passed": false,
+      "passed": false
     },
     {
       "id": "eval_009",
@@ -170,12 +170,12 @@
         "Employee Onboarding"
       ],
       "retrieval_passed": true,
-      "system_answer": "Employees should consider the following when working remotely:\n\n1. **Schedule Agreement**: The specific remote work schedule must be agreed upon with their manager and should not conflict with required office meetings, customer commitments, or operational needs.\n2. **Role Requirements**: Some positions may require more frequent on-site attendance due to dependencies on physical equipment, secure facilities, direct customer interaction, or regulatory requirements.\n3. **Home-Office Equipment Allowance**: Eligible remote employees may receive a one-time allowance for home-office equipment (up to USD 300) with manager approval before purchase.\n4. **Submission of Receipts**: Receipts for approved equipment must be submitted through the Expenses section.\n5. **Company Property**: Any equipment supplied directly by the company remains its property and must be returned when requested or upon termination of employment.",
+      "system_answer": "Employees should consider the following when working remotely:\n\n1. **Schedule Agreement**: The specific remote work schedule must be agreed upon with the manager and should not conflict with required office meetings, customer commitments, or operational needs.\n2. **Position Requirements**: Some positions may require more frequent on-site attendance due to reliance on physical equipment, secure facilities, direct customer interaction, or regulatory requirements.\n3. **Home-Office Equipment Allowance**: Eligible remote employees may receive a one-time allowance of up to USD 300 for home-office equipment, with approved purchases needing manager approval and receipts submitted through the Expenses section.\n4. **Company Property**: Equipment supplied by the company remains company property and must be returned upon request or when employment ends.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer addresses the user's question by summarizing key considerations for employees working remotely, as detailed in the retrieved context. It includes information about scheduling, role requirements, home-office equipment allowances, receipt submissions, and company property, all of which are relevant and factually supported."
+        "explanation": "The answer provided covers key considerations for employees working remotely based on the retrieved context. It addresses the need for a schedule agreement with managers, the requirements for certain positions, the home-office equipment allowance and its conditions, and the ownership of company-supplied equipment. Each point is directly supported by the context."
       },
       "answer_passed": true,
       "passed": true
@@ -190,12 +190,12 @@
         "Account Access and Password Recovery"
       ],
       "retrieval_passed": true,
-      "system_answer": "AR HR protects employee information using AES-256 encryption for stored data and TLS 1.2 or later for data transmitted between users and the platform. Additionally, access to employment information is controlled through role-based access control.",
+      "system_answer": "AR HR protects employee information using AES-256 encryption for stored data and TLS 1.2 or later for transmitted data. Access is regulated through role-based access control, ensuring that employees receive only the necessary permissions for their responsibilities.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer accurately reflects the information in the retrieved context about how AR HR protects employee information, including the encryption methods and access controls."
+        "explanation": "The answer is grounded in the retrieved context, accurately reflecting that AR HR uses AES-256 encryption and TLS 1.2 for data protection. It correctly describes the role-based access control system to regulate employee permissions, thus directly addressing the user's question about how AR HR protects employee information."
       },
       "answer_passed": true,
       "passed": true
@@ -215,7 +215,7 @@
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer is grounded in the provided context, specifically from the reference that states employees can access AR HR via its mobile application available for iOS and Android. It directly addresses the user's question on mobile access and includes all necessary details without introducing unsupported information."
+        "explanation": "The answer accurately reflects the information in the retrieved context by confirming that employees can access AR HR from mobile devices through the specified application for iOS and Android. It directly answers the user's question without omitting important details."
       },
       "answer_passed": true,
       "passed": true
@@ -229,12 +229,12 @@
         "Payroll and Payslips"
       ],
       "retrieval_passed": true,
-      "system_answer": "Customers can find information about subscriptions and charges in the Plans and Billing section. It details the available subscription plans, pricing based on active employees, invoice issuance, and cancellation policies.",
+      "system_answer": "Customers can find information about subscriptions and charges under the Plans and Billing section. This includes details about the different subscription plans (Starter, Business, and Enterprise), pricing based on active employees, billing processes, and invoice access.",
       "answer_evaluation": {
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer correctly references the Plans and Billing context, addressing where customers can find information about subscriptions and charges. It includes key details about subscription plans, pricing, invoicing, and cancellation policies, fully answering the user's question without adding unsupported information."
+        "explanation": "The answer is grounded in the retrieved context, as it clearly states where to find information about subscriptions and charges (i.e., the Plans and Billing section) and summarizes key aspects mentioned in the context, such as subscription plans, pricing based on active employees, and billing processes."
       },
       "answer_passed": true,
       "passed": true
@@ -254,7 +254,7 @@
         "grounded": true,
         "relevant": true,
         "complete": true,
-        "explanation": "The answer correctly states the methods to contact AR HR for assistance, which are grounded in the provided context. It is relevant to the user's question, and it includes all necessary information without adding unsupported details."
+        "explanation": "The answer accurately reflects the information retrieved from the context, providing the correct methods to contact AR HR for assistance—through in-application chat or email. It addresses the user's question directly and includes all essential details without adding unsupported information."
       },
       "answer_passed": true,
       "passed": true
