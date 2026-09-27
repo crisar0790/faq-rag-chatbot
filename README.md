@@ -66,12 +66,17 @@ Every successful query returns exactly three top-level fields:
 ```json
 {
   "user_question": "How can I reset my password?",
-  "system_answer": "Employees can reset their password from the login page.",
+  "system_answer": "Employees can request a password reset from the login page. The reset link remains valid for 30 minutes.",
   "chunks_related": [
     {
       "chunk_id": "chunk_002",
       "section": "Account Access and Password Recovery",
-      "text": "Relevant source text..."
+      "text": "Employees can request a password reset from the login page."
+    },
+    {
+      "chunk_id": "chunk_003",
+      "section": "Account Access and Password Recovery",
+      "text": "Password reset links remain valid for 30 minutes."
     }
   ]
 }
@@ -189,6 +194,13 @@ Alternatively, the API key can be exported directly in the current terminal sess
 
 ```bash
 export OPENAI_API_KEY="your-openai-api-key"
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY="your-openai-api-key"
+```
 
 The `.env` file is excluded from Git and must never be committed.
 
@@ -234,14 +246,27 @@ python -m src.query \
 
 The accepted `top_k` range is between 2 and 5.
 
-
-```markdown
 ## Generate Sample Outputs
 
 Generate the required sample query file:
 
 ```bash
 python -m src.generate_samples
+```
+
+The command executes three representative questions and saves their complete RAG responses in:
+
+```text
+outputs/sample_queries.json
+```
+
+Each sample contains exactly:
+
+- `user_question`
+- `system_answer`
+- `chunks_related`
+
+The sample outputs do not expose embeddings, token counts, or internal similarity scores.
 
 ## Run the Interactive Chatbot
 
