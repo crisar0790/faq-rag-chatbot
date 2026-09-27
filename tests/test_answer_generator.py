@@ -6,12 +6,12 @@ import pytest
 
 from src.answer_generator import (
     AnswerGenerationError,
+    _parse_answer_response,
     build_context,
     build_user_message,
     generate_grounded_answer,
     load_answer_prompt,
 )
-
 
 class FakeResponsesAPI:
     def __init__(self, response):

@@ -79,23 +79,13 @@ def build_user_message(question: str, chunks: list[dict[str, Any]]) -> str:
         f"{clean_question}"
     )
 
-
-def generate_grounded_answer(question: str, chunks: list[dict[str, Any]], client: Any, model: str, max_output_tokens: int) -> str:
-    """Generate and validate an answer grounded in the retrieved chunks."""
-    prompt = load_answer_prompt()
-    user_message = build_user_message(question, chunks)
-
-    response = client.responses.create(
+def _request_answer(client: Any, model: str, prompt: str, user_message: str, max_output_tokens: int) -> Any:
+    """Request a structured grounded answer from OpenAI."""
+    return client.responses.create(
         model=model,
         input=[
-            {
-                "role": "system",
-                "content": prompt,
-            },
-            {
-                "role": "user",
-                "content": user_message,
-            },
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": user_message},
         ],
         max_output_tokens=max_output_tokens,
         text={
@@ -108,14 +98,19 @@ def generate_grounded_answer(question: str, chunks: list[dict[str, Any]], client
         },
     )
 
+def _parse_answer_response(response: Any) -> str:
+    """Parse and validate a structured answer response."""
     if response.status != "completed":
-        reason = getattr(
-            getattr(response, "incomplete_details", None),
-            "reason",
-            "unknown",
+        details = getattr(
+            response,
+            "incomplete_details",
+            None,
         )
+        reason = getattr(details, "reason", "unknown")
+
         raise AnswerGenerationError(
-            f"Answer generation was not completed: {reason}"
+            "Answer generation was not completed: "
+            f"{reason}"
         )
 
     try:
@@ -133,3 +128,18 @@ def generate_grounded_answer(question: str, chunks: list[dict[str, Any]], client
         )
 
     return answer.strip()
+
+def generate_grounded_answer(question: str, chunks: list[dict[str, Any]], client: Any, model: str, max_output_tokens: int) -> str:
+    """Generate and validate an answer grounded in retrieved chunks."""
+    response = _request_answer(
+        client=client,
+        model=model,
+        prompt=load_answer_prompt(),
+        user_message=build_user_message(
+            question,
+            chunks,
+        ),
+        max_output_tokens=max_output_tokens,
+    )
+
+    return _parse_answer_response(response)
