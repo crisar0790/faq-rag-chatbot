@@ -6,6 +6,20 @@ The application processes a plain-text support document, divides it into semanti
 
 The example knowledge base contains fictional policies, procedures, and product information for AR HR.
 
+## Why RAG?
+
+This project uses Retrieval-Augmented Generation because the model must answer questions using a specific support document rather than relying on its general training knowledge.
+
+Before generating an answer, the application retrieves the document chunks that are semantically closest to the user's question and provides them to the language model as context.
+
+This approach provides several benefits:
+
+- The knowledge base can be updated without retraining the language model.
+- Answers remain grounded in the available support documentation.
+- Retrieved chunks provide transparency and source attribution.
+- The model can clearly indicate when the documentation does not contain enough information.
+- Internal company information remains separated from the model's general knowledge.
+
 ## Features
 
 - Plain-text document loading and normalization.
@@ -75,6 +89,8 @@ faq-rag-chatbot/
 ├── evaluation/
 │   ├── questions.json
 │   └── report.json
+├── outputs/
+│   └── sample_queries.json
 ├── prompts/
 │   ├── answer_prompt.md
 │   └── evaluator_prompt.md
@@ -89,6 +105,7 @@ faq-rag-chatbot/
 │   ├── errors.py
 │   ├── evaluate.py
 │   ├── evaluation_dataset.py
+│   ├── generate_samples.py
 │   ├── query.py
 │   ├── rag_output.py
 │   ├── rag_service.py
@@ -100,6 +117,23 @@ faq-rag-chatbot/
 ├── README.md
 └── requirements.txt
 ```
+
+### Main Components
+
+| Component | Responsibility |
+|---|---|
+| `document_loader.py` | Loads and normalizes the UTF-8 source document. |
+| `chunker.py` | Divides the document into section-aware semantic chunks. |
+| `embeddings.py` | Generates and validates OpenAI embeddings. |
+| `vector_store.py` | Persists and loads the JSON vector index. |
+| `retrieval.py` | Performs exact k-NN search using cosine similarity. |
+| `answer_generator.py` | Generates answers grounded in retrieved chunks. |
+| `rag_output.py` | Enforces the public JSON response contract. |
+| `rag_service.py` | Orchestrates the complete RAG pipeline. |
+| `query.py` | Executes an individual command-line query. |
+| `chat.py` | Provides the interactive command-line chatbot. |
+| `evaluate.py` | Evaluates retrieval and answer quality. |
+| `generate_samples.py` | Generates the required sample query outputs. |
 
 ## Requirements
 
@@ -151,6 +185,11 @@ LLM_MODEL=gpt-4o-mini
 MAX_OUTPUT_TOKENS=400
 ```
 
+Alternatively, the API key can be exported directly in the current terminal session:
+
+```bash
+export OPENAI_API_KEY="your-openai-api-key"
+
 The `.env` file is excluded from Git and must never be committed.
 
 ## Build the Vector Index
@@ -194,6 +233,15 @@ python -m src.query \
 ```
 
 The accepted `top_k` range is between 2 and 5.
+
+
+```markdown
+## Generate Sample Outputs
+
+Generate the required sample query file:
+
+```bash
+python -m src.generate_samples
 
 ## Run the Interactive Chatbot
 
@@ -275,10 +323,14 @@ evaluation/report.json
 |---|---:|
 | Total evaluation cases | 13 |
 | Retrieval accuracy | 100% |
-| Answer accuracy | 100% |
-| Overall accuracy | 100% |
+| Answer accuracy | 92.31% |
+| Overall accuracy | 92.31% |
 
-The answer evaluation uses an LLM evaluator, so results may vary slightly between executions.
+The current evaluation retrieves the expected section in all 13 cases. Twelve answers pass the groundedness, relevance, and completeness evaluation.
+
+One answer fails the completeness criterion because it omits relevant expense-submission details available in the retrieved context. This result is preserved in the report instead of being manually altered.
+
+The answer evaluation uses a language model, so results may vary slightly between executions. The authoritative results for a particular run are stored in `evaluation/report.json`.
 
 ## Error Handling
 
@@ -308,7 +360,15 @@ Unexpected internal exception details are not exposed to users.
 
 ### Semantic chunking
 
-The document is divided according to its sections and paragraphs. Oversized paragraphs are split at sentence boundaries, while small adjacent pieces from the same section are merged.
+The document is divided according to its explicit sections and paragraphs. Oversized paragraphs are split at sentence boundaries, while small adjacent pieces from the same section are merged.
+
+Chunk sizes are measured with the `cl100k_base` tokenizer. The configured limits are:
+
+- Minimum chunk size: 50 tokens.
+- Maximum chunk size: 300 tokens.
+- Section marker: `## `.
+
+These limits keep chunks large enough to preserve useful context while preventing unrelated procedures from being combined into the same embedding.
 
 The current strategy does not use overlapping chunks because the source document has explicit sections and relatively self-contained paragraphs.
 
@@ -317,6 +377,14 @@ The current strategy does not use overlapping chunks because the source document
 The embeddings are stored in `data/index.json`. This provides persistence and reproducibility without introducing unnecessary infrastructure for a 29-chunk knowledge base.
 
 For a larger or frequently updated collection, the storage layer could be replaced with Chroma, Qdrant, Pinecone, FAISS, or PostgreSQL with `pgvector`.
+
+### Exact k-NN and cosine similarity
+
+Retrieval uses exact k-nearest-neighbor search over every stored embedding and orders the results by cosine similarity.
+
+Exact search was selected because the knowledge base currently contains only 29 chunks. At this scale, comparing the query with every vector is fast, deterministic, and guarantees that the true nearest neighbors are considered. Approximate nearest-neighbor systems become more useful when a collection contains thousands or millions of vectors.
+
+Cosine similarity was selected because it compares the direction of embedding vectors while reducing the influence of their magnitude. This makes it appropriate for measuring semantic similarity between a user question and document chunks.
 
 ### Structured outputs
 
