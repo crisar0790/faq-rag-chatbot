@@ -9,6 +9,7 @@ from src.vector_store import (
     load_index,
     save_index,
     validate_index_model,
+    validate_loaded_index,
 )
 
 
@@ -193,3 +194,86 @@ def test_validate_index_model_rejects_different_model():
             index,
             "text-embedding-3-small",
         )
+
+def valid_index() -> dict:
+    """Return a valid in-memory vector index."""
+    return {
+        "index_version": 1,
+        "embedding_model": "text-embedding-3-small",
+        "embedding_dimension": 3,
+        "chunks": [
+            {
+                "chunk_id": "chunk_001",
+                "section": "Account Access",
+                "text": "Password reset information.",
+                "token_count": 52,
+                "embedding": [0.1, 0.2, 0.3],
+            },
+            {
+                "chunk_id": "chunk_002",
+                "section": "Security",
+                "text": "Account security information.",
+                "token_count": 54,
+                "embedding": [0.4, 0.5, 0.6],
+            },
+        ],
+    }
+
+
+def test_validate_loaded_index_accepts_valid_index():
+    validate_loaded_index(valid_index())
+
+
+def test_validate_loaded_index_rejects_missing_fields():
+    index = valid_index()
+    del index["embedding_dimension"]
+
+    with pytest.raises(
+        ValueError,
+        match="missing or unexpected",
+    ):
+        validate_loaded_index(index)
+
+
+def test_validate_loaded_index_rejects_wrong_dimension():
+    index = valid_index()
+    index["chunks"][0]["embedding"] = [0.1, 0.2]
+
+    with pytest.raises(
+        ValueError,
+        match="invalid dimension",
+    ):
+        validate_loaded_index(index)
+
+
+def test_validate_loaded_index_rejects_duplicate_ids():
+    index = valid_index()
+    index["chunks"][1]["chunk_id"] = "chunk_001"
+
+    with pytest.raises(
+        ValueError,
+        match="identifiers must be unique",
+    ):
+        validate_loaded_index(index)
+
+
+def test_validate_loaded_index_rejects_invalid_tokens():
+    index = valid_index()
+    index["chunks"][0]["token_count"] = 0
+
+    with pytest.raises(
+        ValueError,
+        match="positive integer",
+    ):
+        validate_loaded_index(index)
+
+
+def test_validate_loaded_index_rejects_non_finite_value():
+    index = valid_index()
+    index["chunks"][0]["embedding"][0] = float("nan")
+
+    with pytest.raises(
+        ValueError,
+        match="finite numbers",
+    ):
+        validate_loaded_index(index)
