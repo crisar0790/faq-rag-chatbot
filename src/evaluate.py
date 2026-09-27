@@ -134,9 +134,15 @@ def validate_evaluation_result(evaluation: Any) -> dict[str, Any]:
         "reason": clean_reason,
     }
 
-def evaluate_answer(question: str, answer: str, chunks: list[dict[str, Any]], client: Any, model: str) -> dict[str, Any]:
-    """Evaluate an answer for groundedness, relevance, and completeness."""
-    response = client.responses.create(
+def _request_evaluation(
+    question: str,
+    answer: str,
+    chunks: list[dict[str, Any]],
+    client: Any,
+    model: str,
+) -> Any:
+    """Request a structured evaluation from OpenAI."""
+    return client.responses.create(
         model=model,
         input=[
             {
@@ -146,9 +152,9 @@ def evaluate_answer(question: str, answer: str, chunks: list[dict[str, Any]], cl
             {
                 "role": "user",
                 "content": build_evaluation_input(
-                    question=question,
-                    answer=answer,
-                    chunks=chunks,
+                    question,
+                    answer,
+                    chunks,
                 ),
             },
         ],
@@ -163,6 +169,9 @@ def evaluate_answer(question: str, answer: str, chunks: list[dict[str, Any]], cl
         },
     )
 
+
+def _parse_evaluation_response(response: Any) -> dict[str, Any]:
+    """Parse and validate a structured evaluation response."""
     if response.status != "completed":
         raise ValueError(
             "The evaluator response was not completed."
@@ -178,6 +187,24 @@ def evaluate_answer(question: str, answer: str, chunks: list[dict[str, Any]], cl
         ) from error
 
     return validate_evaluation_result(evaluation)
+
+def evaluate_answer(
+    question: str,
+    answer: str,
+    chunks: list[dict[str, Any]],
+    client: Any,
+    model: str,
+) -> dict[str, Any]:
+    """Evaluate an answer using the configured scoring rubric."""
+    response = _request_evaluation(
+        question=question,
+        answer=answer,
+        chunks=chunks,
+        client=client,
+        model=model,
+    )
+
+    return _parse_evaluation_response(response)
 
 def evaluate_rag_output(rag_output: dict[str, Any], client: Any, model: str) -> dict[str, Any]:
     """Evaluate one complete public RAG response."""
@@ -202,40 +229,49 @@ def evaluate_rag_output(rag_output: dict[str, Any], client: Any, model: str) -> 
         model=model,
     )
 
-def evaluate_case(evaluation_case: dict[str, str], index: dict[str, Any], client: Any, embedding_model: str, llm_model: str, max_output_tokens: int, top_k: int) -> dict[str, Any]:
-    """Run and evaluate one end-to-end RAG test case."""
-    rag_output = answer_question(
+def _run_evaluation_query(
+    evaluation_case: dict[str, str],
+    index: dict[str, Any],
+    client: Any,
+    embedding_model: str,
+    llm_model: str,
+    max_output_tokens: int,
+    top_k: int,
+) -> dict[str, Any]:
+    """Run one dataset question through the RAG pipeline."""
+    return answer_question(
         question=evaluation_case["question"],
         index=index,
         client=client,
         embedding_model=embedding_model,
         llm_model=llm_model,
         max_output_tokens=max_output_tokens,
-        create_query_embedding=(
-            create_query_embedding
-        ),
+        create_query_embedding=create_query_embedding,
         retrieve_chunks=retrieve_chunks,
         top_k=top_k,
     )
 
-    retrieved_sections = list(
+
+def _get_retrieved_sections(
+    chunks: list[dict[str, Any]],
+) -> list[str]:
+    """Return unique retrieved section names in result order."""
+    return list(
         dict.fromkeys(
             chunk["section"]
-            for chunk in rag_output["chunks_related"]
+            for chunk in chunks
         )
     )
 
-    retrieval_passed = (
-        evaluation_case["expected_section"]
-        in retrieved_sections
-    )
 
-    answer_evaluation = evaluate_rag_output(
-        rag_output=rag_output,
-        client=client,
-        model=llm_model,
-    )
-
+def _build_case_result(
+    evaluation_case: dict[str, str],
+    rag_output: dict[str, Any],
+    retrieved_sections: list[str],
+    retrieval_passed: bool,
+    answer_evaluation: dict[str, Any],
+) -> dict[str, Any]:
+    """Build the persisted result for one evaluation case."""
     answer_passed = (
         answer_evaluation["score"] >= PASSING_SCORE
     )
@@ -243,9 +279,7 @@ def evaluate_case(evaluation_case: dict[str, str], index: dict[str, Any], client
     return {
         "id": evaluation_case["id"],
         "question": evaluation_case["question"],
-        "expected_section": (
-            evaluation_case["expected_section"]
-        ),
+        "expected_section": evaluation_case["expected_section"],
         "retrieved_sections": retrieved_sections,
         "retrieval_passed": retrieval_passed,
         "system_answer": rag_output["system_answer"],
@@ -254,61 +288,101 @@ def evaluate_case(evaluation_case: dict[str, str], index: dict[str, Any], client
         "passed": retrieval_passed and answer_passed,
     }
 
+def evaluate_case(
+    evaluation_case: dict[str, str],
+    index: dict[str, Any],
+    client: Any,
+    embedding_model: str,
+    llm_model: str,
+    max_output_tokens: int,
+    top_k: int,
+) -> dict[str, Any]:
+    """Run and evaluate one end-to-end RAG test case."""
+    rag_output = _run_evaluation_query(
+        evaluation_case, index, client,
+        embedding_model, llm_model,
+        max_output_tokens, top_k,
+    )
+    retrieved_sections = _get_retrieved_sections(
+        rag_output["chunks_related"]
+    )
+    retrieval_passed = (
+        evaluation_case["expected_section"]
+        in retrieved_sections
+    )
+    answer_evaluation = evaluate_rag_output(
+        rag_output=rag_output,
+        client=client,
+        model=llm_model,
+    )
 
-def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
-    """Calculate retrieval, answer, and overall evaluation metrics."""
+    return _build_case_result(
+        evaluation_case, rag_output,
+        retrieved_sections, retrieval_passed,
+        answer_evaluation,
+    )
+
+def _count_passed(
+    results: list[dict[str, Any]],
+    field: str,
+) -> int:
+    """Count results whose selected boolean field is true."""
+    return sum(
+        bool(result[field])
+        for result in results
+    )
+
+def build_summary(
+    results: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Calculate retrieval, answer, and overall metrics."""
     total = len(results)
-
-    retrieval_passed = sum(
-        result["retrieval_passed"]
-        for result in results
+    retrieval_passed = _count_passed(
+        results,
+        "retrieval_passed",
     )
-    answer_passed = sum(
-        result["answer_passed"]
-        for result in results
+    answer_passed = _count_passed(
+        results,
+        "answer_passed",
     )
-    fully_passed = sum(
-        result["passed"]
-        for result in results
+    fully_passed = _count_passed(
+        results,
+        "passed",
     )
 
     return {
         "total_cases": total,
         "retrieval_passed": retrieval_passed,
-        "retrieval_accuracy": round(
-            retrieval_passed / total,
-            4,
-        ),
+        "retrieval_accuracy": round(retrieval_passed / total, 4),
         "answer_passed": answer_passed,
-        "answer_accuracy": round(
-            answer_passed / total,
-            4,
-        ),
+        "answer_accuracy": round(answer_passed / total, 4),
         "fully_passed": fully_passed,
-        "overall_accuracy": round(
-            fully_passed / total,
-            4,
-        ),
+        "overall_accuracy": round(fully_passed / total, 4),
     }
 
+def _select_evaluation_cases(
+    dataset: list[dict[str, str]],
+    limit: int | None,
+) -> list[dict[str, str]]:
+    """Apply an optional positive limit to evaluation cases."""
+    if limit is None:
+        return dataset
 
-def run_evaluation(dataset_path: Path, index_path: Path, report_path: Path, top_k: int, limit: int | None) -> dict[str, Any]:
-    """Evaluate the dataset and persist the resulting JSON report."""
-    dataset = load_evaluation_dataset(
-        dataset_path
-    )
+    if limit <= 0:
+        raise ValueError(
+            "limit must be greater than zero."
+        )
 
-    if limit is not None:
-        if limit <= 0:
-            raise ValueError(
-                "limit must be greater than zero."
-            )
+    return dataset[:limit]
 
-        dataset = dataset[:limit]
 
-    index = load_index(index_path)
-    client = get_openai_client()
-
+def _evaluate_cases(
+    dataset: list[dict[str, str]],
+    index: dict[str, Any],
+    client: Any,
+    top_k: int,
+) -> list[dict[str, Any]]:
+    """Execute every selected evaluation case."""
     results = []
 
     for position, evaluation_case in enumerate(
@@ -319,29 +393,30 @@ def run_evaluation(dataset_path: Path, index_path: Path, report_path: Path, top_
             f"Evaluating {position}/{len(dataset)}: "
             f"{evaluation_case['id']}"
         )
-
-        result = evaluate_case(
-            evaluation_case=evaluation_case,
-            index=index,
-            client=client,
-            embedding_model=get_embedding_model(),
-            llm_model=get_llm_model(),
-            max_output_tokens=get_max_output_tokens(),
-            top_k=top_k,
+        results.append(
+            evaluate_case(
+                evaluation_case=evaluation_case,
+                index=index,
+                client=client,
+                embedding_model=get_embedding_model(),
+                llm_model=get_llm_model(),
+                max_output_tokens=get_max_output_tokens(),
+                top_k=top_k,
+            )
         )
 
-        results.append(result)
+    return results
 
-    report = {
-        "summary": build_summary(results),
-        "results": results,
-    }
 
+def _save_report(
+    report: dict[str, Any],
+    report_path: Path,
+) -> None:
+    """Persist an evaluation report as formatted JSON."""
     report_path.parent.mkdir(
         parents=True,
         exist_ok=True,
     )
-
     report_path.write_text(
         json.dumps(
             report,
@@ -350,6 +425,31 @@ def run_evaluation(dataset_path: Path, index_path: Path, report_path: Path, top_
         ),
         encoding="utf-8",
     )
+
+def run_evaluation(
+    dataset_path: Path,
+    index_path: Path,
+    report_path: Path,
+    top_k: int,
+    limit: int | None,
+) -> dict[str, Any]:
+    """Evaluate the dataset and persist the JSON report."""
+    dataset = _select_evaluation_cases(
+        load_evaluation_dataset(dataset_path),
+        limit,
+    )
+    results = _evaluate_cases(
+        dataset=dataset,
+        index=load_index(index_path),
+        client=get_openai_client(),
+        top_k=top_k,
+    )
+    report = {
+        "summary": build_summary(results),
+        "results": results,
+    }
+
+    _save_report(report, report_path)
 
     return report
 
