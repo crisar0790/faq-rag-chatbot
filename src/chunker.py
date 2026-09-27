@@ -30,7 +30,7 @@ def count_tokens(text: str) -> int:
     return len(get_encoding().encode(text))
 
 def split_sentences(text: str) -> list[str]:
-    """Split text afeter sentence-ending punctuation."""
+    """Split text after sentence-ending punctuation."""
     return [
         sentence.strip()
         for sentence in re.split(r"(?<=[.!?])\s+", text.strip())

@@ -1,3 +1,5 @@
+"""Convert internal exceptions into safe user-facing error messages."""
+
 import json
 
 from openai import (
@@ -10,6 +12,7 @@ from openai import (
 from src.answer_generator import AnswerGenerationError
 
 def get_error_message(error: Exception) -> str:
+    """Return a safe and understandable message for an application error."""
     if isinstance(error, FileNotFoundError):
         return (
             "The required file was not found. "
@@ -52,6 +55,7 @@ def get_error_message(error: Exception) -> str:
     return "An unexpected error occurred."
 
 def format_error(error: Exception) -> str:
+    """Serialize an application error using the public JSON error format."""
     return json.dumps(
         {
             "error": get_error_message(error),

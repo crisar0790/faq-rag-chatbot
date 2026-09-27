@@ -1,4 +1,4 @@
-"""Generate vector embedding for document chunks."""
+"""Generate vector embeddings for document chunks."""
 
 from typing import Protocol
 

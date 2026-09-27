@@ -42,10 +42,12 @@ def get_openai_timeout() -> float:
     return timeout
 
 def get_llm_model() -> str:
+    """Return the configured OpenAI language model."""
     return os.getenv("LLM_MODEL", DEFAULT_LLM_MODEL)
 
 
 def get_max_output_tokens() -> int:
+    """Return the validated maximum number of generated output tokens."""
     value = os.getenv(
         "MAX_OUTPUT_TOKENS",
         str(DEFAULT_MAX_OUTPUT_TOKENS),

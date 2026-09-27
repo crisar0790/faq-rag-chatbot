@@ -1,4 +1,4 @@
-"""Retrival document chunks using cosine similarity."""
+"""Retrieve document chunks using cosine similarity."""
 
 from typing import Any
 

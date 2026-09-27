@@ -1,3 +1,5 @@
+"""Generate grounded answers from retrieved document chunks."""
+
 import json
 from pathlib import Path
 from typing import Any
@@ -22,6 +24,7 @@ class AnswerGenerationError(Exception):
 
 
 def load_answer_prompt(prompt_path: Path = PROMPT_PATH) -> str:
+    """Load and validate the system prompt used for answer generation."""
     if not prompt_path.exists():
         raise FileNotFoundError(
             f"Answer prompt not found: {prompt_path}"
@@ -36,6 +39,7 @@ def load_answer_prompt(prompt_path: Path = PROMPT_PATH) -> str:
 
 
 def build_context(chunks: list[dict[str, Any]]) -> str:
+    """Format retrieved chunks as contextual evidence for the model."""
     if not chunks:
         raise ValueError("At least one chunk is required.")
 
@@ -58,6 +62,7 @@ def build_context(chunks: list[dict[str, Any]]) -> str:
 
 
 def build_user_message(question: str, chunks: list[dict[str, Any]]) -> str:
+    """Combine the user question and retrieved context into one message."""
     clean_question = question.strip()
 
     if not clean_question:
@@ -76,6 +81,7 @@ def build_user_message(question: str, chunks: list[dict[str, Any]]) -> str:
 
 
 def generate_grounded_answer(question: str, chunks: list[dict[str, Any]], client: Any, model: str, max_output_tokens: int) -> str:
+    """Generate and validate an answer grounded in the retrieved chunks."""
     prompt = load_answer_prompt()
     user_message = build_user_message(question, chunks)
 

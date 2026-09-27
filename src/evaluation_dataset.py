@@ -1,3 +1,5 @@
+"""Load and validate the dataset used to evaluate the RAG system."""
+
 import json
 from pathlib import Path
 from typing import TypedDict
@@ -9,12 +11,14 @@ DEFAULT_DATASET_PATH = Path(
 
 
 class EvaluationCase(TypedDict):
+    """Represent one question and its expected document section."""
     id: str
     question: str
     expected_section: str
 
 
 def validate_evaluation_case(evaluation_case: object, position: int) -> EvaluationCase:
+    """Validate and normalize one evaluation dataset entry."""
     if not isinstance(evaluation_case, dict):
         raise ValueError(
             f"Evaluation case {position} must be an object."
@@ -55,6 +59,7 @@ def validate_evaluation_case(evaluation_case: object, position: int) -> Evaluati
 
 
 def load_evaluation_dataset(path: Path = DEFAULT_DATASET_PATH) -> list[EvaluationCase]:
+    """Load a non-empty evaluation dataset with unique case identifiers."""
     if not path.exists():
         raise FileNotFoundError(
             f"Evaluation dataset not found: {path}"

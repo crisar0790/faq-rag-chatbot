@@ -1,3 +1,5 @@
+"""Execute individual questions through the complete RAG pipeline."""
+
 import argparse
 import json
 from pathlib import Path
@@ -20,14 +22,17 @@ DEFAULT_INDEX_PATH = Path("data/index.json")
 DEFAULT_TOP_K = 3
 
 def create_query_embedding(text: str, client: Any, model: str) -> list[float]:
+    """Generate a single embedding vector for a user question."""
     embeddings = generate_embeddings(texts=[text], client=client, model=model)
 
     return embeddings[0]
 
 def retrieve_chunks(query_embedding: list[float], index: dict[str, Any], top_k: int) -> list[dict[str, Any]]:
+    """Retrieve the most similar document chunks for a query vector."""
     return search_similar_chunks(index=index, query_embedding=query_embedding, top_k=top_k)
 
 def run_query(question: str, index_path: Path = DEFAULT_INDEX_PATH, top_k: int = DEFAULT_TOP_K) -> dict[str, Any]:
+    """Run one question through retrieval and grounded answer generation."""
     index = load_index(index_path)
     client = get_openai_client()
 
@@ -44,6 +49,7 @@ def run_query(question: str, index_path: Path = DEFAULT_INDEX_PATH, top_k: int =
     )
 
 def parse_arguments() -> argparse.Namespace:
+    """Parse command-line arguments for an individual FAQ query."""
     parser = argparse.ArgumentParser(
         description=(
             "Ask a question using the AR HR FAQ "
@@ -76,6 +82,7 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 def main() -> None:
+    """Execute the command-line query and print its JSON result."""
     args = parse_arguments()
 
     try:

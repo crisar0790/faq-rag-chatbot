@@ -1,3 +1,5 @@
+"""Provide an interactive command-line interface for the FAQ chatbot."""
+
 import json
 from collections.abc import Callable
 from typing import Any
@@ -17,6 +19,7 @@ EMPTY_QUESTION_MESSAGE = "Please enter a question."
 GOODBYE_MESSAGE = "Goodbye!"
 
 def format_result(result: dict[str, Any]) -> str:
+    """Serialize a RAG result as readable JSON."""
     return json.dumps(
         result,
         indent=2,
@@ -28,6 +31,7 @@ def run_chat(
     input_function: Callable[[str], str] = input,
     output_function: Callable[[str], None] = print,
 ) -> None:
+    """Run the interactive question-and-answer loop until the user exits."""
     output_function(WELCOME_MESSAGE)
 
     while True:
@@ -50,6 +54,7 @@ def run_chat(
         output_function(format_result(result))
 
 def main() -> None:
+    """Start the interactive chatbot command."""
     run_chat()
 
 if __name__ == "__main__":

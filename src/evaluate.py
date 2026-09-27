@@ -1,3 +1,5 @@
+"""Evaluate retrieval and answer quality across a question dataset."""
+
 import argparse
 import json
 from pathlib import Path
@@ -54,6 +56,7 @@ EVALUATION_SCHEMA = {
 
 
 def load_evaluator_prompt(path: Path = EVALUATOR_PROMPT_PATH) -> str:
+    """Load and validate the prompt used by the answer evaluator."""
     if not path.exists():
         raise FileNotFoundError(
             f"Evaluator prompt not found: {path}"
@@ -72,6 +75,7 @@ def load_evaluator_prompt(path: Path = EVALUATOR_PROMPT_PATH) -> str:
 
 
 def build_evaluation_input(question: str, answer: str, chunks: list[dict[str, Any]]) -> str:
+    """Build the question, context, and answer input for evaluation."""
     context = "\n\n".join(
         (
             f"[{chunk['chunk_id']} | "
@@ -95,6 +99,7 @@ def build_evaluation_input(question: str, answer: str, chunks: list[dict[str, An
 
 
 def evaluate_answer(question: str, answer: str, chunks: list[dict[str, Any]], client: Any, model: str) -> dict[str, Any]:
+    """Evaluate an answer for groundedness, relevance, and completeness."""
     response = client.responses.create(
         model=model,
         input=[
@@ -140,6 +145,7 @@ def evaluate_answer(question: str, answer: str, chunks: list[dict[str, Any]], cl
 
 
 def evaluate_case(evaluation_case: dict[str, str], index: dict[str, Any], client: Any, embedding_model: str, llm_model: str, max_output_tokens: int, top_k: int) -> dict[str, Any]:
+    """Run and evaluate one end-to-end RAG test case."""
     rag_output = answer_question(
         question=evaluation_case["question"],
         index=index,
@@ -198,6 +204,7 @@ def evaluate_case(evaluation_case: dict[str, str], index: dict[str, Any], client
 
 
 def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
+    """Calculate retrieval, answer, and overall evaluation metrics."""
     total = len(results)
 
     retrieval_passed = sum(
@@ -234,6 +241,7 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def run_evaluation(dataset_path: Path, index_path: Path, report_path: Path, top_k: int, limit: int | None) -> dict[str, Any]:
+    """Evaluate the dataset and persist the resulting JSON report."""
     dataset = load_evaluation_dataset(
         dataset_path
     )
@@ -295,6 +303,7 @@ def run_evaluation(dataset_path: Path, index_path: Path, report_path: Path, top_
 
 
 def parse_arguments() -> argparse.Namespace:
+    """Parse command-line arguments for the evaluation command."""
     parser = argparse.ArgumentParser(
         description="Evaluate the AR HR FAQ RAG system."
     )
@@ -330,6 +339,7 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Run the configured evaluation and print its summary."""
     args = parse_arguments()
 
     report = run_evaluation(

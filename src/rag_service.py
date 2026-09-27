@@ -1,3 +1,5 @@
+"""Orchestrate retrieval and grounded generation for user questions."""
+
 from typing import Any, Callable
 
 from src.answer_generator import generate_grounded_answer
@@ -14,6 +16,7 @@ def answer_question(
     retrieve_chunks: Callable,
     top_k: int = 3,
 ) -> dict[str, Any]:
+    """Run the complete RAG flow and return a validated public result."""
     clean_question = question.strip()
 
     if not clean_question:
