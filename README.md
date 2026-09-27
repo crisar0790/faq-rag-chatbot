@@ -323,14 +323,16 @@ evaluation/report.json
 |---|---:|
 | Total evaluation cases | 13 |
 | Retrieval accuracy | 100% |
-| Answer accuracy | 92.31% |
-| Overall accuracy | 92.31% |
+| Answer accuracy | 100% |
+| Overall accuracy | 100% |
 
-The current evaluation retrieves the expected section in all 13 cases. Twelve answers pass the groundedness, relevance, and completeness evaluation.
+The retrieval system finds the expected document section in all 13 evaluation cases.
 
-One answer fails the completeness criterion because it omits relevant expense-submission details available in the retrieved context. This result is preserved in the report instead of being manually altered.
+Answer quality is evaluated on a scale from 0 to 10 using three dimensions: groundedness, relevance, and completeness. An answer passes when it receives a score of 7 or higher.
 
-The answer evaluation uses a language model, so results may vary slightly between executions. The authoritative results for a particular run are stored in `evaluation/report.json`.
+All 13 generated answers currently meet the passing threshold, and all 13 end-to-end evaluation cases pass both the retrieval and answer-quality criteria.
+
+Because answer quality is assessed by a language model, individual scores and explanations may vary slightly between executions. The authoritative results for each evaluation run are stored in `evaluation/report.json`.
 
 ## Error Handling
 

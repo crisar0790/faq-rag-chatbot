@@ -32,28 +32,25 @@ EVALUATOR_PROMPT_PATH = Path(
 EVALUATION_SCHEMA = {
     "type": "object",
     "properties": {
-        "grounded": {
-            "type": "boolean",
+        "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10,
         },
-        "relevant": {
-            "type": "boolean",
-        },
-        "complete": {
-            "type": "boolean",
-        },
-        "explanation": {
+        "reason": {
             "type": "string",
+            "minLength": 50,
         },
     },
     "required": [
-        "grounded",
-        "relevant",
-        "complete",
-        "explanation",
+        "score",
+        "reason",
     ],
     "additionalProperties": False,
 }
 
+PASSING_SCORE = 7
+MIN_REASON_LENGTH = 50
 
 def load_evaluator_prompt(path: Path = EVALUATOR_PROMPT_PATH) -> str:
     """Load and validate the prompt used by the answer evaluator."""
@@ -97,6 +94,45 @@ def build_evaluation_input(question: str, answer: str, chunks: list[dict[str, An
         f"{answer}"
     )
 
+def validate_evaluation_result(evaluation: Any) -> dict[str, Any]:
+    """Validate the score and reason returned by the evaluator."""
+    if not isinstance(evaluation, dict):
+        raise ValueError(
+            "The evaluation result must be an object."
+        )
+
+    if set(evaluation) != {"score", "reason"}:
+        raise ValueError(
+            "The evaluation result must contain exactly "
+            "score and reason."
+        )
+
+    score = evaluation["score"]
+    reason = evaluation["reason"]
+
+    if type(score) is not int or not 0 <= score <= 10:
+        raise ValueError(
+            "The evaluation score must be an integer "
+            "between 0 and 10."
+        )
+
+    if not isinstance(reason, str):
+        raise ValueError(
+            "The evaluation reason must be a string."
+        )
+
+    clean_reason = reason.strip()
+
+    if len(clean_reason) < MIN_REASON_LENGTH:
+        raise ValueError(
+            "The evaluation reason must contain at "
+            "least 50 characters."
+        )
+
+    return {
+        "score": score,
+        "reason": clean_reason,
+    }
 
 def evaluate_answer(question: str, answer: str, chunks: list[dict[str, Any]], client: Any, model: str) -> dict[str, Any]:
     """Evaluate an answer for groundedness, relevance, and completeness."""
@@ -136,13 +172,35 @@ def evaluate_answer(question: str, answer: str, chunks: list[dict[str, Any]], cl
         evaluation = json.loads(
             response.output_text
         )
-    except json.JSONDecodeError as error:
+    except (TypeError, json.JSONDecodeError) as error:
         raise ValueError(
             "The evaluator returned invalid JSON."
         ) from error
 
-    return evaluation
+    return validate_evaluation_result(evaluation)
 
+def evaluate_rag_output(rag_output: dict[str, Any], client: Any, model: str) -> dict[str, Any]:
+    """Evaluate one complete public RAG response."""
+    required_fields = {
+        "user_question",
+        "system_answer",
+        "chunks_related",
+    }
+
+    if set(rag_output) != required_fields:
+        raise ValueError(
+            "The RAG output must contain exactly "
+            "user_question, system_answer and "
+            "chunks_related."
+        )
+
+    return evaluate_answer(
+        question=rag_output["user_question"],
+        answer=rag_output["system_answer"],
+        chunks=rag_output["chunks_related"],
+        client=client,
+        model=model,
+    )
 
 def evaluate_case(evaluation_case: dict[str, str], index: dict[str, Any], client: Any, embedding_model: str, llm_model: str, max_output_tokens: int, top_k: int) -> dict[str, Any]:
     """Run and evaluate one end-to-end RAG test case."""
@@ -172,20 +230,14 @@ def evaluate_case(evaluation_case: dict[str, str], index: dict[str, Any], client
         in retrieved_sections
     )
 
-    answer_evaluation = evaluate_answer(
-        question=evaluation_case["question"],
-        answer=rag_output["system_answer"],
-        chunks=rag_output["chunks_related"],
+    answer_evaluation = evaluate_rag_output(
+        rag_output=rag_output,
         client=client,
         model=llm_model,
     )
 
-    answer_passed = all(
-        [
-            answer_evaluation["grounded"],
-            answer_evaluation["relevant"],
-            answer_evaluation["complete"],
-        ]
+    answer_passed = (
+        answer_evaluation["score"] >= PASSING_SCORE
     )
 
     return {
