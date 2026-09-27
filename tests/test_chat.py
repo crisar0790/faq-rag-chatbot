@@ -147,3 +147,33 @@ def test_chat_continues_after_query_error():
     assert '"error": "Temporary query error."' in outputs[1]
     assert '"system_answer": "Successful answer."' in outputs[2]
     assert outputs[-1] == GOODBYE_MESSAGE
+
+def test_chat_handles_end_of_input():
+    outputs = []
+
+    def closed_input(prompt):
+        raise EOFError
+
+    run_chat(
+        ask_question=lambda question: {},
+        input_function=closed_input,
+        output_function=outputs.append,
+    )
+
+    assert outputs[0] == WELCOME_MESSAGE
+    assert outputs[-1] == GOODBYE_MESSAGE
+
+
+def test_chat_handles_keyboard_interrupt():
+    outputs = []
+
+    def interrupted_input(prompt):
+        raise KeyboardInterrupt
+
+    run_chat(
+        ask_question=lambda question: {},
+        input_function=interrupted_input,
+        output_function=outputs.append,
+    )
+
+    assert outputs[-1] == GOODBYE_MESSAGE

@@ -4,7 +4,7 @@ import json
 from collections.abc import Callable
 from typing import Any
 
-from src.query import run_query
+from src.query import create_query_runner
 from src.errors import format_error
 
 EXIT_COMMANDS = {"exit", "quit"}
@@ -26,8 +26,15 @@ def format_result(result: dict[str, Any]) -> str:
         ensure_ascii=False,
     )
 
+def _read_question(input_function: Callable[[str], str]) -> str | None:
+    """Read one question or return None when input closes."""
+    try:
+        return input_function("\nQuestion: ").strip()
+    except (KeyboardInterrupt, EOFError):
+        return None
+
 def run_chat(
-    ask_question: Callable[[str], dict[str, Any]] = run_query,
+    ask_question: Callable[[str], dict[str, Any]],
     input_function: Callable[[str], str] = input,
     output_function: Callable[[str], None] = print,
 ) -> None:
@@ -35,7 +42,11 @@ def run_chat(
     output_function(WELCOME_MESSAGE)
 
     while True:
-        question = input_function("\nQuestion: ").strip()
+        question = _read_question(input_function)
+
+        if question is None:
+            output_function(GOODBYE_MESSAGE)
+            break
 
         if question.lower() in EXIT_COMMANDS:
             output_function(GOODBYE_MESSAGE)
@@ -55,7 +66,13 @@ def run_chat(
 
 def main() -> None:
     """Start the interactive chatbot command."""
-    run_chat()
+    try:
+        query_runner = create_query_runner()
+    except Exception as error:
+        print(format_error(error))
+        raise SystemExit(1) from error
+
+    run_chat(ask_question=query_runner)
 
 if __name__ == "__main__":
     main()

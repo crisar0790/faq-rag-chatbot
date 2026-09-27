@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from typing import Any
+import sys
 
 from src.chunker import chunk_document
 from src.config import (
@@ -13,6 +14,7 @@ from src.config import (
 from src.document_loader import load_document
 from src.embeddings import OpenAIClient, generate_embeddings
 from src.vector_store import save_index
+from src.errors import format_error
 
 def build_index(client: OpenAIClient, document_path: Path, index_path: Path, model: str) -> dict[str, Any]:
     """Run the complete document indexing pipeline."""
@@ -59,15 +61,19 @@ def print_summary(summary: dict[str, Any]) -> None:
 
 def main() -> None:
     """Build the real vector index using OpenAI."""
-    model = get_embedding_model()
-    client = get_openai_client()
-
-    summary = build_index(
-        client=client,
-        document_path=DOCUMENT_PATH,
-        index_path=INDEX_PATH,
-        model=model,
-    )
+    try:
+        summary = build_index(
+            client=get_openai_client(),
+            document_path=DOCUMENT_PATH,
+            index_path=INDEX_PATH,
+            model=get_embedding_model(),
+        )
+    except Exception as error:
+        print(
+            format_error(error),
+            file=sys.stderr,
+        )
+        raise SystemExit(1) from error
 
     print_summary(summary)
 

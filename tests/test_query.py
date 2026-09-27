@@ -3,6 +3,7 @@ from unittest.mock import Mock
 from src.query import (
     create_query_embedding,
     retrieve_chunks,
+    create_query_runner,
 )
 
 
@@ -76,3 +77,63 @@ def test_retrieve_chunks(monkeypatch):
     )
 
     assert result == expected_chunks
+
+def test_query_runner_reuses_loaded_resources(
+    monkeypatch,
+):
+    load_index_mock = Mock(
+        return_value={
+            "embedding_model": (
+                "text-embedding-3-small"
+            ),
+            "chunks": [],
+        }
+    )
+    client = Mock()
+    answer_question_mock = Mock(
+        side_effect=[
+            {"user_question": "First"},
+            {"user_question": "Second"},
+        ]
+    )
+
+    monkeypatch.setattr(
+        "src.query.load_index",
+        load_index_mock,
+    )
+    monkeypatch.setattr(
+        "src.query.validate_index_model",
+        Mock(),
+    )
+    monkeypatch.setattr(
+        "src.query.get_openai_client",
+        Mock(return_value=client),
+    )
+    monkeypatch.setattr(
+        "src.query.get_embedding_model",
+        Mock(
+            return_value="text-embedding-3-small"
+        ),
+    )
+    monkeypatch.setattr(
+        "src.query.get_llm_model",
+        Mock(return_value="gpt-4o-mini"),
+    )
+    monkeypatch.setattr(
+        "src.query.get_max_output_tokens",
+        Mock(return_value=400),
+    )
+    monkeypatch.setattr(
+        "src.query.answer_question",
+        answer_question_mock,
+    )
+
+    runner = create_query_runner()
+
+    first_result = runner("First")
+    second_result = runner("Second")
+
+    assert first_result["user_question"] == "First"
+    assert second_result["user_question"] == "Second"
+    load_index_mock.assert_called_once()
+    assert answer_question_mock.call_count == 2

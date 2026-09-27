@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 import sys
+from collections.abc import Callable
 
 from src.config import (
     INDEX_PATH,
@@ -35,24 +36,38 @@ def retrieve_chunks(query_embedding: list[float], index: dict[str, Any], top_k: 
     """Retrieve the most similar document chunks for a query vector."""
     return search_similar_chunks(index=index, query_embedding=query_embedding, top_k=top_k)
 
-def run_query(question: str, index_path: Path = DEFAULT_INDEX_PATH, top_k: int = DEFAULT_TOP_K) -> dict[str, Any]:
-    """Run one question through retrieval and grounded answer generation."""
+def create_query_runner(index_path: Path = DEFAULT_INDEX_PATH, top_k: int = DEFAULT_TOP_K) -> Callable[[str], dict[str, Any]]:
+    """Create a query function that reuses its index and client."""
     index = load_index(index_path)
     embedding_model = get_embedding_model()
     validate_index_model(index, embedding_model)
     client = get_openai_client()
+    llm_model = get_llm_model()
+    max_output_tokens = get_max_output_tokens()
 
-    return answer_question(
-        question=question,
-        index=index,
-        client=client,
-        embedding_model=embedding_model,
-        llm_model=get_llm_model(),
-        max_output_tokens=get_max_output_tokens(),
-        create_query_embedding=create_query_embedding,
-        retrieve_chunks=retrieve_chunks,
+    def ask_question(question: str) -> dict[str, Any]:
+        return answer_question(
+            question=question,
+            index=index,
+            client=client,
+            embedding_model=embedding_model,
+            llm_model=llm_model,
+            max_output_tokens=max_output_tokens,
+            create_query_embedding=create_query_embedding,
+            retrieve_chunks=retrieve_chunks,
+            top_k=top_k,
+        )
+
+    return ask_question
+
+def run_query(question: str, index_path: Path = DEFAULT_INDEX_PATH, top_k: int = DEFAULT_TOP_K) -> dict[str, Any]:
+    """Run one question through the complete RAG pipeline."""
+    query_runner = create_query_runner(
+        index_path=index_path,
         top_k=top_k,
     )
+
+    return query_runner(question)
 
 def _build_argument_parser() -> argparse.ArgumentParser:
     """Create the command-line parser for individual queries."""
