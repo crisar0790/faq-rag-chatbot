@@ -53,7 +53,7 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Ask a question using the AR HR FAQ "
-            "knoeledge base."
+            "knowledge base."
         )
     )
 

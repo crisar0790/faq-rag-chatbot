@@ -7,7 +7,7 @@ import numpy as np
 MIN_RESULTS = 2
 MAX_RESULTS = 5
 
-def cosine_similarity(first_vector: list[float], second_vector: list[float]) ->float:
+def cosine_similarity(first_vector: list[float], second_vector: list[float]) -> float:
     """Calculate cosine similarity between two vectors."""
     if len(first_vector) != len(second_vector):
         raise ValueError(
@@ -49,10 +49,10 @@ def validate_search_input(index: dict[str, Any], query_embedding: list[float], t
     if len(chunks) < top_k:
         raise ValueError(
             "The index does not contain enough chunks "
-            "for the requested TOP_K"
+            "for the requested TOP_K."
         )
 
-def build_search_result(chunk: dict[str, Any], similarity: float) ->dict[str, Any]:
+def build_search_result(chunk: dict[str, Any], similarity: float) -> dict[str, Any]:
     """Build a result without exposing stored embedding."""
     return {
         "chunk_id": chunk["chunk_id"],

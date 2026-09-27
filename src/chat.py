@@ -11,7 +11,7 @@ EXIT_COMMANDS = {"exit", "quit"}
 
 WELCOME_MESSAGE = (
     "AR HR FAQ Chatbot\n"
-    "Ask a question about the available documentarion.\n"
+    "Ask a question about the available documentation.\n"
     "Type 'exit' or 'quit' to close the chatbot."
 )
 

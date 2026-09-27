@@ -19,7 +19,9 @@ def validate_index_input(chunks: list[dict], embeddings: list[list[float]], mode
         )
 
     if not model.strip():
-        raise ValueError("The embedding must not be empty.")
+        raise ValueError(
+            "The embedding model must not be empty."
+        )
 
     dimensions = {
         len(embedding)
@@ -27,7 +29,7 @@ def validate_index_input(chunks: list[dict], embeddings: list[list[float]], mode
     }
 
     if len(dimensions) != 1 or 0 in dimensions:
-        raise ValueError("All embeddings mut have the same dimension.")
+        raise ValueError("All embeddings must have the same dimension.")
 
     return dimensions.pop()
 

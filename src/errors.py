@@ -11,31 +11,56 @@ from openai import (
 
 from src.answer_generator import AnswerGenerationError
 
-def get_error_message(error: Exception) -> str:
-    """Return a safe and understandable message for an application error."""
-    if isinstance(error, FileNotFoundError):
-        return (
+
+STATIC_ERROR_MESSAGES = (
+    (
+        FileNotFoundError,
+        (
             "The required file was not found. "
             "Verify that the vector index and prompt exist."
-        )
-
-    if isinstance(error, AuthenticationError):
-        return (
+        ),
+    ),
+    (
+        AuthenticationError,
+        (
             "OpenAI authentication failed. "
             "Verify the OPENAI_API_KEY value."
-        )
-
-    if isinstance(error, APITimeoutError):
-        return (
+        ),
+    ),
+    (
+        APITimeoutError,
+        (
             "The OpenAI request timed out. "
             "Please try again."
-        )
-
-    if isinstance(error, APIConnectionError):
-        return (
+        ),
+    ),
+    (
+        APIConnectionError,
+        (
             "Could not connect to OpenAI. "
             "Check your internet connection and try again."
-        )
+        ),
+    ),
+)
+
+
+def _get_static_error_message(
+    error: Exception,
+) -> str | None:
+    """Return a predefined message for a known exception."""
+    for error_type, message in STATIC_ERROR_MESSAGES:
+        if isinstance(error, error_type):
+            return message
+
+    return None
+
+
+def get_error_message(error: Exception) -> str:
+    """Return a safe and understandable application error."""
+    static_message = _get_static_error_message(error)
+
+    if static_message is not None:
+        return static_message
 
     if isinstance(error, APIStatusError):
         return (
@@ -54,12 +79,11 @@ def get_error_message(error: Exception) -> str:
 
     return "An unexpected error occurred."
 
+
 def format_error(error: Exception) -> str:
-    """Serialize an application error using the public JSON error format."""
+    """Serialize an error using the public JSON error format."""
     return json.dumps(
-        {
-            "error": get_error_message(error),
-        },
+        {"error": get_error_message(error)},
         indent=2,
         ensure_ascii=False,
     )

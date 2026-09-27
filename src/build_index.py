@@ -49,7 +49,7 @@ def print_summary(summary: dict[str, Any]) -> None:
     """Print a readable indexing summary."""
     print("Index built successfully")
     print(f'Words processed: {summary["word_count"]}')
-    print(f'Chuns created: {summary["chunk_count"]}')
+    print(f'Chunks created: {summary["chunk_count"]}')
     print(f'Embeddings created: {summary["embedding_count"]}')
     print(
         "Embedding dimension: "
