@@ -3,11 +3,10 @@
 import json
 from pathlib import Path
 from typing import Any, TypedDict
+from src.config import EVALUATION_DATASET_PATH
 
 
-DEFAULT_DATASET_PATH = Path(
-    "evaluation/questions.json"
-)
+DEFAULT_DATASET_PATH = EVALUATION_DATASET_PATH
 
 EXPECTED_FIELDS = {
     "id",

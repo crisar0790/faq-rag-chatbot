@@ -4,8 +4,9 @@ import json
 from pathlib import Path
 from typing import Any
 
+from src.config import ANSWER_PROMPT_PATH
 
-PROMPT_PATH = Path("prompts/answer_prompt.md")
+PROMPT_PATH = ANSWER_PROMPT_PATH
 
 ANSWER_SCHEMA = {
     "type": "object",

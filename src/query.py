@@ -7,6 +7,7 @@ from typing import Any
 import sys
 
 from src.config import (
+    INDEX_PATH,
     get_embedding_model,
     get_llm_model,
     get_max_output_tokens,
@@ -15,10 +16,13 @@ from src.config import (
 from src.embeddings import generate_embeddings
 from src.rag_service import answer_question
 from src.retrieval import search_similar_chunks
-from src.vector_store import load_index
+from src.vector_store import (
+    load_index,
+    validate_index_model,
+)
 from src.errors import format_error
 
-DEFAULT_INDEX_PATH = Path("data/index.json")
+DEFAULT_INDEX_PATH = INDEX_PATH
 DEFAULT_TOP_K = 3
 
 def create_query_embedding(text: str, client: Any, model: str) -> list[float]:
@@ -34,13 +38,15 @@ def retrieve_chunks(query_embedding: list[float], index: dict[str, Any], top_k: 
 def run_query(question: str, index_path: Path = DEFAULT_INDEX_PATH, top_k: int = DEFAULT_TOP_K) -> dict[str, Any]:
     """Run one question through retrieval and grounded answer generation."""
     index = load_index(index_path)
+    embedding_model = get_embedding_model()
+    validate_index_model(index, embedding_model)
     client = get_openai_client()
 
     return answer_question(
         question=question,
         index=index,
         client=client,
-        embedding_model=get_embedding_model(),
+        embedding_model=embedding_model,
         llm_model=get_llm_model(),
         max_output_tokens=get_max_output_tokens(),
         create_query_embedding=create_query_embedding,

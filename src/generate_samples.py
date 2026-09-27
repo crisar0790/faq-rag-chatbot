@@ -5,10 +5,11 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from src.config import SAMPLE_OUTPUT_PATH
 from src.query import run_query
 
 
-OUTPUT_PATH = Path("outputs/sample_queries.json")
+OUTPUT_PATH = SAMPLE_OUTPUT_PATH
 
 SAMPLE_QUESTIONS = [
     "How can I reset my password?",

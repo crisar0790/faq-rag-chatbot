@@ -79,3 +79,23 @@ def load_index(path: Path) -> dict[str, Any]:
         ) from error
 
     return index
+
+def validate_index_model(
+    index: dict[str, Any],
+    configured_model: str,
+) -> None:
+    """Ensure the index uses the configured embedding model."""
+    indexed_model = index.get("embedding_model")
+
+    if not isinstance(indexed_model, str):
+        raise ValueError(
+            "The vector index does not contain a valid "
+            "embedding model."
+        )
+
+    if indexed_model != configured_model:
+        raise ValueError(
+            "The vector index was generated with "
+            f"'{indexed_model}', but the configured model "
+            f"is '{configured_model}'. Rebuild the index."
+        )

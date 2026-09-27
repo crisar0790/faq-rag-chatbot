@@ -5,7 +5,11 @@ from pathlib import Path
 
 import pytest
 
-from src.vector_store import load_index, save_index
+from src.vector_store import (
+    load_index,
+    save_index,
+    validate_index_model,
+)
 
 
 def sample_chunks() -> list[dict]:
@@ -153,3 +157,39 @@ def test_load_index_rejects_invalid_json(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="valid JSON"):
         load_index(index_path)
+
+def test_validate_index_model_accepts_matching_model():
+    index = {
+        "embedding_model": "text-embedding-3-small",
+    }
+
+    validate_index_model(
+        index,
+        "text-embedding-3-small",
+    )
+
+
+def test_validate_index_model_rejects_missing_model():
+    with pytest.raises(
+        ValueError,
+        match="does not contain a valid",
+    ):
+        validate_index_model(
+            {},
+            "text-embedding-3-small",
+        )
+
+
+def test_validate_index_model_rejects_different_model():
+    index = {
+        "embedding_model": "different-model",
+    }
+
+    with pytest.raises(
+        ValueError,
+        match="Rebuild the index",
+    ):
+        validate_index_model(
+            index,
+            "text-embedding-3-small",
+        )

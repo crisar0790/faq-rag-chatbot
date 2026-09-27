@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any
 
 from src.config import (
+    EVALUATION_REPORT_PATH,
+    EVALUATOR_PROMPT_PATH,
     get_embedding_model,
     get_llm_model,
     get_max_output_tokens,
@@ -21,13 +23,13 @@ from src.query import (
     retrieve_chunks,
 )
 from src.rag_service import answer_question
-from src.vector_store import load_index
-
-
-DEFAULT_REPORT_PATH = Path("evaluation/report.json")
-EVALUATOR_PROMPT_PATH = Path(
-    "prompts/evaluator_prompt.md"
+from src.vector_store import (
+    load_index,
+    validate_index_model,
 )
+
+
+DEFAULT_REPORT_PATH = EVALUATION_REPORT_PATH
 
 EVALUATION_SCHEMA = {
     "type": "object",
@@ -438,9 +440,14 @@ def run_evaluation(
         load_evaluation_dataset(dataset_path),
         limit,
     )
+    index = load_index(index_path)
+    validate_index_model(
+        index,
+        get_embedding_model(),
+    )
     results = _evaluate_cases(
         dataset=dataset,
-        index=load_index(index_path),
+        index=index,
         client=get_openai_client(),
         top_k=top_k,
     )

@@ -7,10 +7,32 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-ENV_PATH = BASE_DIR / ".env"
 DATA_DIR = BASE_DIR / "data"
+PROMPTS_DIR = BASE_DIR / "prompts"
+EVALUATION_DIR = BASE_DIR / "evaluation"
+OUTPUTS_DIR = BASE_DIR / "outputs"
+
 DOCUMENT_PATH = DATA_DIR / "faq_document.txt"
 INDEX_PATH = DATA_DIR / "index.json"
+
+ANSWER_PROMPT_PATH = (
+    PROMPTS_DIR / "answer_prompt.md"
+)
+EVALUATOR_PROMPT_PATH = (
+    PROMPTS_DIR / "evaluator_prompt.md"
+)
+
+EVALUATION_DATASET_PATH = (
+    EVALUATION_DIR / "questions.json"
+)
+EVALUATION_REPORT_PATH = (
+    EVALUATION_DIR / "report.json"
+)
+
+SAMPLE_OUTPUT_PATH = (
+    OUTPUTS_DIR / "sample_queries.json"
+)
+ENV_PATH = BASE_DIR / ".env"
 DEFAULT_LLM_MODEL = "gpt-4o-mini"
 DEFAULT_MAX_OUTPUT_TOKENS = 400
 
