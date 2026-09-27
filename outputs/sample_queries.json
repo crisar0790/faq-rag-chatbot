@@ -1,28 +1,28 @@
 [
   {
     "user_question": "How can I reset my password?",
-    "system_answer": "To reset your password, go to the login page and select the \"Forgot password\" link. Then, enter your registered email address. Ar HR will send a password reset message to that address. Note that the reset link is valid for 30 minutes.",
+    "system_answer": "To reset your password, go to the login page and select the “Forgot password” link. Enter your registered email address, and AR HR will send a password reset message to that address. Follow the instructions in the email to complete the reset. Note that the reset link will expire after 30 minutes.",
     "chunks_related": [
       {
         "chunk_id": "chunk_003",
         "section": "Account Access and Password Recovery",
-        "text": "When a reset email does not arrive, the employee should first check the spam or junk folder and confirm that the correct email address was entered. The employee should wait several minutes before requesting another message. If the problem continues, the company administrator should verify the email address assigned to the account.\n\nAr HR temporarily locks an account after five consecutive failed login attempts. The lock lasts 15 minutes and prevents additional login attempts during that period. Employees should wait until the lock expires or use the password recovery process instead of repeatedly entering possible passwords.\n\nEmployees cannot directly replace the primary email address associated with their account. An authorized company administrator must make the change. After the administrator enters the new address, Ar HR sends a verification message before activating it."
+        "text": "When a reset email does not arrive, the employee should first check the spam or junk folder and confirm that the correct email address was entered. The employee should wait several minutes before requesting another message. If the problem continues, the company administrator should verify the email address assigned to the account.\n\nAR HR temporarily locks an account after five consecutive failed login attempts. The lock lasts 15 minutes and prevents additional login attempts during that period. Employees should wait until the lock expires or use the password recovery process instead of repeatedly entering possible passwords.\n\nEmployees cannot directly replace the primary email address associated with their account. An authorized company administrator must make the change. After the administrator enters the new address, AR HR sends a verification message before activating it."
       },
       {
         "chunk_id": "chunk_002",
         "section": "Account Access and Password Recovery",
-        "text": "Employees access Ar HR using the email address registered by their company administrator. The email address acts as the unique identifier for the account and must be verified before the user can access confidential employment information.\n\nAn employee who forgets a password can begin the recovery process from the login page. The employee must select the “Forgot password” link and enter the registered email address. Ar HR then sends a password reset message to that address. For security reasons, the reset link remains valid for 30 minutes. If the link expires, the employee must return to the login page and request another one."
+        "text": "Employees access AR HR using the email address registered by their company administrator. The email address acts as the unique identifier for the account and must be verified before the user can access confidential employment information.\n\nAn employee who forgets a password can begin the recovery process from the login page. The employee must select the “Forgot password” link and enter the registered email address. AR HR then sends a password reset message to that address. For security reasons, the reset link remains valid for 30 minutes. If the link expires, the employee must return to the login page and request another one."
       },
       {
         "chunk_id": "chunk_004",
         "section": "Two-Factor Authentication and Security",
-        "text": "Two-factor authentication adds a second verification step to the login process. Employees can enable it by opening Settings, selecting Security, and choosing the two-factor authentication option. Ar HR supports authentication applications and SMS verification codes.\n\nAfter connecting an authentication method, the employee receives recovery codes. These codes must be stored in a secure location and must not be shared with other people. A recovery code can be used when the employee temporarily loses access to the normal authentication method.\n\nCompany administrators may require two-factor authentication for every user in the organization. When this requirement is enabled, users who have not configured a second factor are prompted to complete the setup during their next login.\n\nUsers should never share passwords, verification codes, recovery codes, or active sessions. A suspected unauthorized login must be reported immediately to the company administrator. The employee should also change the password and review the recent account activity displayed in the Security section."
+        "text": "Two-factor authentication adds a second verification step to the login process. Employees can enable it by opening Settings, selecting Security, and choosing the two-factor authentication option. AR HR supports authentication applications and SMS verification codes.\n\nAfter connecting an authentication method, the employee receives recovery codes. These codes must be stored in a secure location and must not be shared with other people. A recovery code can be used when the employee temporarily loses access to the normal authentication method.\n\nCompany administrators may require two-factor authentication for every user in the organization. When this requirement is enabled, users who have not configured a second factor are prompted to complete the setup during their next login.\n\nUsers should never share passwords, verification codes, recovery codes, or active sessions. A suspected unauthorized login must be reported immediately to the company administrator. The employee should also change the password and review the recent account activity displayed in the Security section."
       }
     ]
   },
   {
     "user_question": "How should an employee submit a work expense?",
-    "system_answer": "To submit a work expense, the employee should open Expenses, select New Expense, complete the required fields, attach the receipt, and submit the record for review.",
+    "system_answer": "To submit a work expense, an employee should open Expenses, select New Expense, complete the required fields, attach the receipt, and submit the record for review.",
     "chunks_related": [
       {
         "chunk_id": "chunk_018",
@@ -43,22 +43,22 @@
   },
   {
     "user_question": "How can a customer contact AR HR support?",
-    "system_answer": "Customers can contact AR HR support via the in-application chat or by sending an email to support@Arhr.example.",
+    "system_answer": "Customers can contact AR HR support by using the in-application chat or by sending an email to support@arhr.example.",
     "chunks_related": [
       {
         "chunk_id": "chunk_029",
         "section": "Customer Support",
-        "text": "Ar HR support is available Monday through Friday from 9:00 to 18:00 GMT-3, excluding published holidays. Customers can use the in-application chat or send an email to support@Arhr.example.\n\nA support request should include a clear description of the problem, the affected feature, relevant timestamps, steps already attempted, and screenshots that do not expose sensitive information.\n\nBusiness plan customers have an initial response target of four business hours. Enterprise customers have an initial response target of one business hour. These targets indicate the expected time to the first response and do not guarantee complete resolution within that period.\n\nUrgent priority should be used when many users cannot access a critical function, payroll processing is blocked, or a security incident is suspected. General questions, minor display problems, and noncritical issues affecting a single user should use normal priority."
+        "text": "AR HR support is available Monday through Friday from 9:00 to 18:00 GMT-3, excluding published holidays. Customers can use the in-application chat or send an email to support@arhr.example.\n\nA support request should include a clear description of the problem, the affected feature, relevant timestamps, steps already attempted, and screenshots that do not expose sensitive information.\n\nBusiness plan customers have an initial response target of four business hours. Enterprise customers have an initial response target of one business hour. These targets indicate the expected time to the first response and do not guarantee complete resolution within that period.\n\nUrgent priority should be used when many users cannot access a critical function, payroll processing is blocked, or a security incident is suspected. General questions, minor display problems, and noncritical issues affecting a single user should use normal priority."
       },
       {
         "chunk_id": "chunk_001",
         "section": "Introduction",
-        "text": "AR HR SUPPORT AND OPERATIONS GUIDE\n\nThis guide describes the principal policies, procedures, and features available in Ar HR. It is intended for employees, managers, company administrators, payroll teams, and support personnel. Company-specific policies may override some default platform settings, but the procedures described here represent the standard Ar HR configuration."
+        "text": "AR HR SUPPORT AND OPERATIONS GUIDE\n\nThis guide describes the principal policies, procedures, and features available in AR HR. It is intended for employees, managers, company administrators, payroll teams, and support personnel. Company-specific policies may override some default platform settings, but the procedures described here represent the standard AR HR configuration."
       },
       {
         "chunk_id": "chunk_002",
         "section": "Account Access and Password Recovery",
-        "text": "Employees access Ar HR using the email address registered by their company administrator. The email address acts as the unique identifier for the account and must be verified before the user can access confidential employment information.\n\nAn employee who forgets a password can begin the recovery process from the login page. The employee must select the “Forgot password” link and enter the registered email address. Ar HR then sends a password reset message to that address. For security reasons, the reset link remains valid for 30 minutes. If the link expires, the employee must return to the login page and request another one."
+        "text": "Employees access AR HR using the email address registered by their company administrator. The email address acts as the unique identifier for the account and must be verified before the user can access confidential employment information.\n\nAn employee who forgets a password can begin the recovery process from the login page. The employee must select the “Forgot password” link and enter the registered email address. AR HR then sends a password reset message to that address. For security reasons, the reset link remains valid for 30 minutes. If the link expires, the employee must return to the login page and request another one."
       }
     ]
   }

@@ -76,9 +76,9 @@ def test_clean_text_normalizes_line_endings() -> None:
 
 def test_clean_text_collapses_repeated_spaces() -> None:
     """Repeated horizontal whitespace should become a single space."""
-    text = "Ar   HR\tprovides    support."
+    text = "AR   HR\tprovides    support."
 
-    assert clean_text(text) == "Ar HR provides support."
+    assert clean_text(text) == "AR HR provides support."
 
 
 def test_clean_text_limits_consecutive_blank_lines() -> None:
