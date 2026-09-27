@@ -407,6 +407,9 @@ The answer prompt instructs the model to:
 - The system requires an OpenAI API key.
 - Evaluation by a language model is not completely deterministic.
 - The current dataset is designed for demonstration rather than production use.
+- Retrieval evaluation currently checks whether the expected section appears among the retrieved chunks; it does not yet calculate precision at k.
+- Exact retrieval does not currently apply a minimum similarity threshold.
+- Sentence splitting uses punctuation-based rules and may not handle every abbreviation perfectly.
 
 ## Future Improvements
 
