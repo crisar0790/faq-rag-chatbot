@@ -172,3 +172,39 @@ def test_rejects_empty_answer(chunks):
             model="gpt-4o-mini",
             max_output_tokens=400,
         )
+
+def test_parse_answer_response():
+    response = SimpleNamespace(
+        status="completed",
+        output_text=json.dumps(
+            {
+                "system_answer": (
+                    "Employees can reset their password "
+                    "from the login page."
+                )
+            }
+        ),
+    )
+
+    answer = _parse_answer_response(response)
+
+    assert answer == (
+        "Employees can reset their password "
+        "from the login page."
+    )
+
+
+def test_parse_answer_response_rejects_incomplete_result():
+    response = SimpleNamespace(
+        status="incomplete",
+        output_text="",
+        incomplete_details=SimpleNamespace(
+            reason="max_output_tokens"
+        ),
+    )
+
+    with pytest.raises(
+        AnswerGenerationError,
+        match="max_output_tokens",
+    ):
+        _parse_answer_response(response)
