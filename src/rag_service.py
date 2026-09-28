@@ -5,6 +5,12 @@ from typing import Any, Callable
 from src.answer_generator import generate_grounded_answer
 from src.rag_output import build_rag_output
 
+from src.constants import (
+    DEFAULT_RETRIEVAL_RESULTS,
+    MAX_RETRIEVAL_RESULTS,
+    MIN_RETRIEVAL_RESULTS,
+)
+
 
 def _validate_question_request(question: str, index: dict[str, Any], top_k: int) -> str:
     """Validate a question request and return its normalized text."""
@@ -16,9 +22,15 @@ def _validate_question_request(question: str, index: dict[str, Any], top_k: int)
     if not index:
         raise ValueError("Vector index cannot be empty.")
 
-    if top_k < 2 or top_k > 5:
+    if not (
+        MIN_RETRIEVAL_RESULTS
+        <= top_k
+        <= MAX_RETRIEVAL_RESULTS
+    ):
         raise ValueError(
-            "top_k must be between 2 and 5."
+            "top_k must be between "
+            f"{MIN_RETRIEVAL_RESULTS} and "
+            f"{MAX_RETRIEVAL_RESULTS}."
         )
 
     return clean_question
@@ -86,7 +98,7 @@ def answer_question(
     max_output_tokens: int,
     create_query_embedding: Callable,
     retrieve_chunks: Callable,
-    top_k: int = 3,
+    top_k: int = DEFAULT_RETRIEVAL_RESULTS,
 ) -> dict[str, Any]:
     """Run the complete RAG flow and return a validated result."""
     clean_question = _validate_question_request(

@@ -31,6 +31,8 @@ from src.vector_store import (
 
 from src.errors import format_error
 
+from src.constants import DEFAULT_RETRIEVAL_RESULTS
+
 
 DEFAULT_REPORT_PATH = EVALUATION_REPORT_PATH
 
@@ -525,7 +527,11 @@ def _build_evaluation_parser() -> argparse.ArgumentParser:
         type=Path,
         default=DEFAULT_REPORT_PATH,
     )
-    parser.add_argument("--top-k", type=int, default=3)
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=DEFAULT_RETRIEVAL_RESULTS,
+    )
     parser.add_argument(
         "--limit",
         type=int,

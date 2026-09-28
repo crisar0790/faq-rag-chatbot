@@ -1,0 +1,5 @@
+"""Shared application constants."""
+
+MIN_RETRIEVAL_RESULTS = 2
+MAX_RETRIEVAL_RESULTS = 5
+DEFAULT_RETRIEVAL_RESULTS = 3

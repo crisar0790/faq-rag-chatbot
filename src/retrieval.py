@@ -4,8 +4,10 @@ from typing import Any
 
 import numpy as np
 
-MIN_RESULTS = 2
-MAX_RESULTS = 5
+from src.constants import (
+    MAX_RETRIEVAL_RESULTS,
+    MIN_RETRIEVAL_RESULTS,
+)
 
 def cosine_similarity(first_vector: list[float], second_vector: list[float]) -> float:
     """Calculate cosine similarity between two vectors."""
@@ -32,9 +34,15 @@ def cosine_similarity(first_vector: list[float], second_vector: list[float]) -> 
 
 def validate_search_input(index: dict[str, Any], query_embedding: list[float], top_k: int) -> None:
     """Validate the index, query vector, and result count."""
-    if not MIN_RESULTS <= top_k <= MAX_RESULTS:
+    if not (
+        MIN_RETRIEVAL_RESULTS
+        <= top_k
+        <= MAX_RETRIEVAL_RESULTS
+    ):
         raise ValueError(
-            f"TOP_K must be between {MIN_RESULTS} and {MAX_RESULTS}."
+            "top_k must be between "
+            f"{MIN_RETRIEVAL_RESULTS} and "
+            f"{MAX_RETRIEVAL_RESULTS}."
         )
 
     expected_dimension = index.get("embedding_dimension")

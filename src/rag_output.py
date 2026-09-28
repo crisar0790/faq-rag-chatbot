@@ -2,8 +2,10 @@
 
 from typing import Any, TypedDict
 
-MIN_RELATED_CHUNKS = 2
-MAX_RELATED_CHUNKS = 5
+from src.constants import (
+    MAX_RETRIEVAL_RESULTS,
+    MIN_RETRIEVAL_RESULTS,
+)
 
 REQUIRED_OUTPUT_KEYS = {
     "user_question",
@@ -74,9 +76,15 @@ def validate_related_chunks(chunks: Any) -> None:
             "chunks_related must be a list."
         )
 
-    if not MIN_RELATED_CHUNKS <= len(chunks) <= MAX_RELATED_CHUNKS:
+    if not (
+        MIN_RETRIEVAL_RESULTS
+        <= len(chunks)
+        <= MAX_RETRIEVAL_RESULTS
+    ):
         raise ValueError(
-            "chunks_related must contain between 2 and 5 chunks."
+            "chunks_related must contain between "
+            f"{MIN_RETRIEVAL_RESULTS} and "
+            f"{MAX_RETRIEVAL_RESULTS} chunks."
         )
 
     for chunk in chunks:

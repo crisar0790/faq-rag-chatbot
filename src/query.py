@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 import sys
 from collections.abc import Callable
+from src.constants import DEFAULT_RETRIEVAL_RESULTS
 
 from src.config import (
     INDEX_PATH,
@@ -24,7 +25,7 @@ from src.vector_store import (
 from src.errors import format_error
 
 DEFAULT_INDEX_PATH = INDEX_PATH
-DEFAULT_TOP_K = 3
+DEFAULT_TOP_K = DEFAULT_RETRIEVAL_RESULTS
 
 def create_query_embedding(text: str, client: Any, model: str) -> list[float]:
     """Generate a single embedding vector for a user question."""
