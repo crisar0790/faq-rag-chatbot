@@ -1,7 +1,7 @@
 [
   {
     "user_question": "How can I reset my password?",
-    "system_answer": "To reset your password, go to the login page and select the “Forgot password” link. Enter your registered email address, and AR HR will send a password reset message to that address. Follow the instructions in the email to complete the reset. Note that the reset link will expire after 30 minutes.",
+    "system_answer": "To reset your password, go to the login page and select the \"Forgot password\" link. Enter your registered email address, and AR HR will send a password reset message to that address. Note that the reset link will remain valid for 30 minutes.",
     "chunks_related": [
       {
         "chunk_id": "chunk_003",
@@ -12,17 +12,12 @@
         "chunk_id": "chunk_002",
         "section": "Account Access and Password Recovery",
         "text": "Employees access AR HR using the email address registered by their company administrator. The email address acts as the unique identifier for the account and must be verified before the user can access confidential employment information.\n\nAn employee who forgets a password can begin the recovery process from the login page. The employee must select the “Forgot password” link and enter the registered email address. AR HR then sends a password reset message to that address. For security reasons, the reset link remains valid for 30 minutes. If the link expires, the employee must return to the login page and request another one."
-      },
-      {
-        "chunk_id": "chunk_004",
-        "section": "Two-Factor Authentication and Security",
-        "text": "Two-factor authentication adds a second verification step to the login process. Employees can enable it by opening Settings, selecting Security, and choosing the two-factor authentication option. AR HR supports authentication applications and SMS verification codes.\n\nAfter connecting an authentication method, the employee receives recovery codes. These codes must be stored in a secure location and must not be shared with other people. A recovery code can be used when the employee temporarily loses access to the normal authentication method.\n\nCompany administrators may require two-factor authentication for every user in the organization. When this requirement is enabled, users who have not configured a second factor are prompted to complete the setup during their next login.\n\nUsers should never share passwords, verification codes, recovery codes, or active sessions. A suspected unauthorized login must be reported immediately to the company administrator. The employee should also change the password and review the recent account activity displayed in the Security section."
       }
     ]
   },
   {
     "user_question": "How should an employee submit a work expense?",
-    "system_answer": "To submit a work expense, an employee should open Expenses, select New Expense, complete the required fields, attach the receipt, and submit the record for review.",
+    "system_answer": "An employee should submit a work expense by opening Expenses, selecting New Expense, completing the required fields, attaching the receipt, and submitting the record for review.",
     "chunks_related": [
       {
         "chunk_id": "chunk_018",
@@ -33,17 +28,12 @@
         "chunk_id": "chunk_017",
         "section": "Expense Management",
         "text": "Employees must submit business expenses within 30 days of the purchase. Each expense record must include the date, amount, currency, merchant, category, business purpose, and a clear image of the receipt. A receipt is required for every expense regardless of the amount, unless local regulations establish a documented exception."
-      },
-      {
-        "chunk_id": "chunk_019",
-        "section": "Expense Management",
-        "text": "Approved expenses are normally reimbursed with the next payroll payment. The expense record displays whether it is submitted, under review, approved, rejected, or paid. If an approved expense does not appear in the expected payment, the employee should contact payroll and provide the expense reference."
       }
     ]
   },
   {
     "user_question": "How can a customer contact AR HR support?",
-    "system_answer": "Customers can contact AR HR support by using the in-application chat or by sending an email to support@arhr.example.",
+    "system_answer": "A customer can contact AR HR support using the in-application chat or by sending an email to support@arhr.example.",
     "chunks_related": [
       {
         "chunk_id": "chunk_029",
@@ -54,11 +44,6 @@
         "chunk_id": "chunk_001",
         "section": "Introduction",
         "text": "AR HR SUPPORT AND OPERATIONS GUIDE\n\nThis guide describes the principal policies, procedures, and features available in AR HR. It is intended for employees, managers, company administrators, payroll teams, and support personnel. Company-specific policies may override some default platform settings, but the procedures described here represent the standard AR HR configuration."
-      },
-      {
-        "chunk_id": "chunk_002",
-        "section": "Account Access and Password Recovery",
-        "text": "Employees access AR HR using the email address registered by their company administrator. The email address acts as the unique identifier for the account and must be verified before the user can access confidential employment information.\n\nAn employee who forgets a password can begin the recovery process from the login page. The employee must select the “Forgot password” link and enter the registered email address. AR HR then sends a password reset message to that address. For security reasons, the reset link remains valid for 30 minutes. If the link expires, the employee must return to the login page and request another one."
       }
     ]
   }
