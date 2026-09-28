@@ -33,22 +33,39 @@ def _read_question(input_function: Callable[[str], str]) -> str | None:
     except (KeyboardInterrupt, EOFError):
         return None
 
+def _handle_question(
+    question: str,
+    ask_question: Callable[[str], dict[str, Any]],
+    output_function: Callable[[str], None],
+) -> bool:
+    """Answer one question and return whether chat should continue."""
+    try:
+        result = ask_question(question)
+    except KeyboardInterrupt:
+        output_function(GOODBYE_MESSAGE)
+        return False
+    except Exception as error:
+        output_function(format_error(error))
+        return True
+
+    output_function(format_result(result))
+    return True
+
 def run_chat(
     ask_question: Callable[[str], dict[str, Any]],
     input_function: Callable[[str], str] = input,
     output_function: Callable[[str], None] = print,
 ) -> None:
-    """Run the interactive question-and-answer loop until the user exits."""
+    """Run the interactive question-and-answer loop."""
     output_function(WELCOME_MESSAGE)
 
     while True:
         question = _read_question(input_function)
 
-        if question is None:
-            output_function(GOODBYE_MESSAGE)
-            break
-
-        if question.lower() in EXIT_COMMANDS:
+        if (
+            question is None
+            or question.lower() in EXIT_COMMANDS
+        ):
             output_function(GOODBYE_MESSAGE)
             break
 
@@ -56,16 +73,12 @@ def run_chat(
             output_function(EMPTY_QUESTION_MESSAGE)
             continue
 
-        try:
-            result = ask_question(question)
-        except KeyboardInterrupt:
-            output_function(GOODBYE_MESSAGE)
+        if not _handle_question(
+            question,
+            ask_question,
+            output_function,
+        ):
             break
-        except Exception as error:
-            output_function(format_error(error))
-            continue
-
-        output_function(format_result(result))
 
 def main() -> None:
     """Start the interactive chatbot command."""

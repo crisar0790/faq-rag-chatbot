@@ -444,14 +444,12 @@ def build_summary(
     """Calculate retrieval, answer, and overall metrics."""
     total = len(results)
     top_1 = _count_top_1_retrievals(results)
-    retrieval = _count_passed(
-        results, "retrieval_passed"
-    )
-    answers = _count_passed(
-        results, "answer_passed"
-    )
-    fully_passed = _count_passed(
-        results, "passed"
+    retrieval = _count_passed(results, "retrieval_passed")
+    answers = _count_passed(results, "answer_passed")
+    fully_passed = _count_passed(results, "passed")
+    mean_precision = _average_metric(
+        results,
+        "section_precision_at_k",
     )
 
     return {
@@ -460,11 +458,14 @@ def build_summary(
         "retrieval_top_1_accuracy": _calculate_ratio(top_1, total),
         "retrieval_passed": retrieval,
         "retrieval_accuracy": _calculate_ratio(retrieval, total),
-        "mean_section_precision_at_k": _average_metric(results, "section_precision_at_k"),
+        "mean_section_precision_at_k": mean_precision,
         "answer_passed": answers,
         "answer_accuracy": _calculate_ratio(answers, total),
         "fully_passed": fully_passed,
-        "overall_accuracy": _calculate_ratio(fully_passed, total),
+        "overall_accuracy": _calculate_ratio(
+            fully_passed,
+            total,
+        ),
     }
 
 def _select_evaluation_cases(
@@ -579,29 +580,23 @@ def _build_evaluation_parser() -> argparse.ArgumentParser:
         description="Evaluate the AR HR FAQ RAG system."
     )
     parser.add_argument(
-        "--dataset",
-        type=Path,
+        "--dataset", type=Path,
         default=DEFAULT_DATASET_PATH,
     )
     parser.add_argument(
-        "--index",
-        type=Path,
+        "--index", type=Path,
         default=DEFAULT_INDEX_PATH,
     )
     parser.add_argument(
-        "--report",
-        type=Path,
+        "--report", type=Path,
         default=DEFAULT_REPORT_PATH,
     )
     parser.add_argument(
-        "--top-k",
-        type=int,
+        "--top-k", type=int,
         default=DEFAULT_RETRIEVAL_RESULTS,
     )
     parser.add_argument(
-        "--limit",
-        type=int,
-        default=None,
+        "--limit", type=int, default=None,
         help="Evaluate only the first N cases.",
     )
 
