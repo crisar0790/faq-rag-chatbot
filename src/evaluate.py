@@ -69,6 +69,7 @@ WORD_PATTERN = re.compile(r"[a-z0-9]+")
 
 QUERY_STOPWORDS = {
     "about",
+    "access",
     "after",
     "again",
     "also",
@@ -79,6 +80,8 @@ QUERY_STOPWORDS = {
     "from",
     "have",
     "into",
+    "review",
+    "should",
     "their",
     "them",
     "they",

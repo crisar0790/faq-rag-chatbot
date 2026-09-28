@@ -327,3 +327,36 @@ def test_evaluation_main_formats_errors(
     assert "Invalid evaluation configuration." in (
         captured.err
     )
+
+def test_evaluate_retrieval_ignores_weak_keywords():
+    evaluation_case = {
+        "id": "eval_test",
+        "question": (
+            "Where should employees review "
+            "their available benefits?"
+        ),
+        "expected_section": "Benefits Administration",
+    }
+    chunks = [
+        {
+            "section": "Benefits Administration",
+            "text": "Employees can manage benefit selections.",
+        },
+        {
+            "section": "Performance Reviews",
+            "text": "Employees should review their performance.",
+        },
+    ]
+
+    result = _evaluate_retrieval(
+        evaluation_case,
+        chunks,
+    )
+
+    assert result["relevant_chunk_count"] == 1
+    assert result[
+        "keyword_or_section_relevant_count"
+    ] == 1
+    assert result[
+        "keyword_or_section_precision_at_k"
+    ] == 0.5
