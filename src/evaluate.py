@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +28,8 @@ from src.vector_store import (
     load_index,
     validate_index_model,
 )
+
+from src.errors import format_error
 
 
 DEFAULT_REPORT_PATH = EVALUATION_REPORT_PATH
@@ -541,13 +544,20 @@ def main() -> None:
     """Run the configured evaluation and print its summary."""
     args = parse_arguments()
 
-    report = run_evaluation(
-        dataset_path=args.dataset,
-        index_path=args.index,
-        report_path=args.report,
-        top_k=args.top_k,
-        limit=args.limit,
-    )
+    try:
+        report = run_evaluation(
+            dataset_path=args.dataset,
+            index_path=args.index,
+            report_path=args.report,
+            top_k=args.top_k,
+            limit=args.limit,
+        )
+    except Exception as error:
+        print(
+            format_error(error),
+            file=sys.stderr,
+        )
+        raise SystemExit(1) from error
 
     print("\nEvaluation completed")
     print(

@@ -2,14 +2,19 @@ import json
 from types import SimpleNamespace
 
 import pytest
+from pathlib import Path
+from unittest.mock import Mock
 
 from src.evaluate import (
     build_evaluation_input,
     build_summary,
     evaluate_answer,
     evaluate_rag_output,
+    main,
     validate_evaluation_result,
 )
+
+from argparse import Namespace
 
 def test_build_evaluation_input():
     result = build_evaluation_input(
@@ -224,3 +229,39 @@ def test_rejects_invalid_rag_output():
             client=object(),
             model="gpt-4o-mini",
         )
+
+def test_evaluation_main_formats_errors(
+    monkeypatch,
+    capsys,
+):
+    args = Namespace(
+        dataset=Path("questions.json"),
+        index=Path("index.json"),
+        report=Path("report.json"),
+        top_k=3,
+        limit=None,
+    )
+
+    monkeypatch.setattr(
+        "src.evaluate.parse_arguments",
+        lambda: args,
+    )
+    monkeypatch.setattr(
+        "src.evaluate.run_evaluation",
+        Mock(
+            side_effect=ValueError(
+                "Invalid evaluation configuration."
+            )
+        ),
+    )
+
+    with pytest.raises(SystemExit) as error:
+        main()
+
+    assert error.value.code == 1
+
+    captured = capsys.readouterr()
+
+    assert "Invalid evaluation configuration." in (
+        captured.err
+    )

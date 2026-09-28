@@ -58,6 +58,9 @@ def run_chat(
 
         try:
             result = ask_question(question)
+        except KeyboardInterrupt:
+            output_function(GOODBYE_MESSAGE)
+            break
         except Exception as error:
             output_function(format_error(error))
             continue

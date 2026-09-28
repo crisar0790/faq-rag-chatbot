@@ -177,3 +177,19 @@ def test_chat_handles_keyboard_interrupt():
     )
 
     assert outputs[-1] == GOODBYE_MESSAGE
+
+def test_chat_handles_interrupt_during_query():
+    answers = iter(["Test question"])
+    outputs = []
+
+    def interrupted_query(question):
+        raise KeyboardInterrupt
+
+    run_chat(
+        ask_question=interrupted_query,
+        input_function=lambda prompt: next(answers),
+        output_function=outputs.append,
+    )
+
+    assert outputs[0] == WELCOME_MESSAGE
+    assert outputs[-1] == GOODBYE_MESSAGE

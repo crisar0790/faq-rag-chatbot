@@ -4,9 +4,11 @@ import json
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
+import sys
 
 from src.config import SAMPLE_OUTPUT_PATH
-from src.query import run_query
+from src.errors import format_error
+from src.query import create_query_runner
 
 
 OUTPUT_PATH = SAMPLE_OUTPUT_PATH
@@ -44,14 +46,22 @@ def save_samples(samples: list[dict[str, Any]], output_path: Path) -> None:
 
 def main() -> None:
     """Generate and persist the required sample query outputs."""
-    samples = generate_samples(
-        questions=SAMPLE_QUESTIONS,
-        query_function=run_query,
-    )
-    save_samples(
-        samples=samples,
-        output_path=OUTPUT_PATH,
-    )
+    try:
+        query_runner = create_query_runner()
+        samples = generate_samples(
+            questions=SAMPLE_QUESTIONS,
+            query_function=query_runner,
+        )
+        save_samples(
+            samples=samples,
+            output_path=OUTPUT_PATH,
+        )
+    except Exception as error:
+        print(
+            format_error(error),
+            file=sys.stderr,
+        )
+        raise SystemExit(1) from error
 
     print(
         f"Saved {len(samples)} sample queries "
