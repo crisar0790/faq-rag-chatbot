@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 from src.evaluate import (
+    _evaluate_retrieval,
     build_evaluation_input,
     build_summary,
     evaluate_answer,
@@ -40,18 +41,21 @@ def test_build_summary():
         {
             "retrieval_rank": 1,
             "retrieval_passed": True,
+            "section_precision_at_k": 0.6667,
             "answer_passed": True,
             "passed": True,
         },
         {
             "retrieval_rank": 2,
             "retrieval_passed": True,
+            "section_precision_at_k": 0.3333,
             "answer_passed": False,
             "passed": False,
         },
         {
             "retrieval_rank": None,
             "retrieval_passed": False,
+            "section_precision_at_k": 0.0,
             "answer_passed": True,
             "passed": False,
         },
@@ -65,11 +69,45 @@ def test_build_summary():
         "retrieval_top_1_accuracy": 0.3333,
         "retrieval_passed": 2,
         "retrieval_accuracy": 0.6667,
+        "mean_section_precision_at_k": 0.3333,
         "answer_passed": 2,
         "answer_accuracy": 0.6667,
         "fully_passed": 1,
         "overall_accuracy": 0.3333,
     }
+
+def test_evaluate_retrieval_calculates_precision_at_k():
+    evaluation_case = {
+        "id": "eval_001",
+        "question": "How can I reset my password?",
+        "expected_section": "Account Access",
+    }
+    chunks = [
+        {
+            "section": "Account Access",
+        },
+        {
+            "section": "Account Access",
+        },
+        {
+            "section": "Data Privacy",
+        },
+    ]
+
+    result = _evaluate_retrieval(
+        evaluation_case,
+        chunks,
+    )
+
+    assert result == (
+        [
+            "Account Access",
+            "Data Privacy",
+        ],
+        1,
+        2,
+        0.6667,
+    )
 
 class FakeResponsesAPI:
     def __init__(self, response):

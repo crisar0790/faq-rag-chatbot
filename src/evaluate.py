@@ -308,14 +308,13 @@ def _build_case_result(
     rag_output: dict[str, Any],
     retrieved_sections: list[str],
     retrieval_rank: int | None,
+    relevant_chunk_count: int,
+    section_precision_at_k: float,
     answer_evaluation: dict[str, Any],
 ) -> dict[str, Any]:
     """Build the persisted result for one evaluation case."""
     retrieval_passed = retrieval_rank is not None
-    retrieval_top_1_passed = retrieval_rank == 1
-    answer_passed = (
-        answer_evaluation["score"] >= PASSING_SCORE
-    )
+    answer_passed = answer_evaluation["score"] >= PASSING_SCORE
 
     return {
         "id": evaluation_case["id"],
@@ -323,8 +322,11 @@ def _build_case_result(
         "expected_section": evaluation_case["expected_section"],
         "retrieved_sections": retrieved_sections,
         "retrieval_rank": retrieval_rank,
-        "retrieval_top_1_passed": retrieval_top_1_passed,
+        "retrieval_top_1_passed": retrieval_rank == 1,
         "retrieval_passed": retrieval_passed,
+        "retrieved_chunk_count": len(rag_output["chunks_related"]),
+        "relevant_chunk_count": relevant_chunk_count,
+        "section_precision_at_k": section_precision_at_k,
         "system_answer": rag_output["system_answer"],
         "answer_evaluation": answer_evaluation,
         "answer_passed": answer_passed,
@@ -334,17 +336,33 @@ def _build_case_result(
 def _evaluate_retrieval(
     evaluation_case: dict[str, str],
     chunks: list[dict[str, Any]],
-) -> tuple[list[str], bool]:
-    """Return retrieved sections and whether the expected one appears."""
+) -> tuple[list[str], int | None, int, float]:
+    """Calculate retrieval metrics for one case."""
+    expected_section = evaluation_case[
+        "expected_section"
+    ]
     retrieved_sections = _get_retrieved_sections(
         chunks
     )
-    retrieval_passed = (
-        evaluation_case["expected_section"]
-        in retrieved_sections
+    retrieval_rank = _find_expected_section_rank(
+        chunks=chunks,
+        expected_section=expected_section,
+    )
+    relevant_chunk_count = sum(
+        chunk["section"] == expected_section
+        for chunk in chunks
+    )
+    section_precision_at_k = round(
+        relevant_chunk_count / len(chunks),
+        4,
     )
 
-    return retrieved_sections, retrieval_passed
+    return (
+        retrieved_sections,
+        retrieval_rank,
+        relevant_chunk_count,
+        section_precision_at_k,
+    )
 
 def evaluate_case(
     evaluation_case: dict[str, str],
@@ -361,27 +379,19 @@ def evaluate_case(
         embedding_model, llm_model,
         max_output_tokens, top_k,
     )
-    chunks = rag_output["chunks_related"]
-
-    retrieved_sections = _get_retrieved_sections(
-        chunks
-    )
-    retrieval_rank = _find_expected_section_rank(
-        chunks=chunks,
-        expected_section=evaluation_case["expected_section"],
+    retrieval = _evaluate_retrieval(
+        evaluation_case,
+        rag_output["chunks_related"],
     )
     answer_evaluation = evaluate_rag_output(
-        rag_output=rag_output,
-        client=client,
-        model=llm_model,
+        rag_output, client, llm_model
     )
 
     return _build_case_result(
-        evaluation_case=evaluation_case,
-        rag_output=rag_output,
-        retrieved_sections=retrieved_sections,
-        retrieval_rank=retrieval_rank,
-        answer_evaluation=answer_evaluation,
+        evaluation_case,
+        rag_output,
+        *retrieval,
+        answer_evaluation,
     )
 
 def _count_passed(
@@ -403,49 +413,58 @@ def _count_top_1_retrievals(
         for result in results
     )
 
+def _calculate_ratio(
+    count: int,
+    total: int,
+) -> float:
+    """Return a rounded ratio with safe zero handling."""
+    if total == 0:
+        return 0.0
+
+    return round(count / total, 4)
+
+
+def _average_metric(
+    results: list[dict[str, Any]],
+    field: str,
+) -> float:
+    """Return the rounded average of a numeric metric."""
+    if not results:
+        return 0.0
+
+    return round(
+        sum(result[field] for result in results)
+        / len(results),
+        4,
+    )
+
 def build_summary(
     results: list[dict[str, Any]],
 ) -> dict[str, Any]:
     """Calculate retrieval, answer, and overall metrics."""
     total = len(results)
-    retrieval_top_1_passed = (
-        _count_top_1_retrievals(results)
+    top_1 = _count_top_1_retrievals(results)
+    retrieval = _count_passed(
+        results, "retrieval_passed"
     )
-    retrieval_passed = _count_passed(
-        results,
-        "retrieval_passed",
-    )
-    answer_passed = _count_passed(
-        results,
-        "answer_passed",
+    answers = _count_passed(
+        results, "answer_passed"
     )
     fully_passed = _count_passed(
-        results,
-        "passed",
+        results, "passed"
     )
 
     return {
         "total_cases": total,
-        "retrieval_top_1_passed": retrieval_top_1_passed,
-        "retrieval_top_1_accuracy": round(
-            retrieval_top_1_passed / total,
-            4,
-        ),
-        "retrieval_passed": retrieval_passed,
-        "retrieval_accuracy": round(
-            retrieval_passed / total,
-            4,
-        ),
-        "answer_passed": answer_passed,
-        "answer_accuracy": round(
-            answer_passed / total,
-            4,
-        ),
+        "retrieval_top_1_passed": top_1,
+        "retrieval_top_1_accuracy": _calculate_ratio(top_1, total),
+        "retrieval_passed": retrieval,
+        "retrieval_accuracy": _calculate_ratio(retrieval, total),
+        "mean_section_precision_at_k": _average_metric(results, "section_precision_at_k"),
+        "answer_passed": answers,
+        "answer_accuracy": _calculate_ratio(answers, total),
         "fully_passed": fully_passed,
-        "overall_accuracy": round(
-            fully_passed / total,
-            4,
-        ),
+        "overall_accuracy": _calculate_ratio(fully_passed, total),
     }
 
 def _select_evaluation_cases(
