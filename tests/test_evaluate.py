@@ -38,16 +38,19 @@ def test_build_evaluation_input():
 def test_build_summary():
     results = [
         {
+            "retrieval_rank": 1,
             "retrieval_passed": True,
             "answer_passed": True,
             "passed": True,
         },
         {
+            "retrieval_rank": 2,
             "retrieval_passed": True,
             "answer_passed": False,
             "passed": False,
         },
         {
+            "retrieval_rank": None,
             "retrieval_passed": False,
             "answer_passed": True,
             "passed": False,
@@ -58,6 +61,8 @@ def test_build_summary():
 
     assert summary == {
         "total_cases": 3,
+        "retrieval_top_1_passed": 1,
+        "retrieval_top_1_accuracy": 0.3333,
         "retrieval_passed": 2,
         "retrieval_accuracy": 0.6667,
         "answer_passed": 2,
