@@ -1,7 +1,7 @@
 [
   {
     "user_question": "How can I reset my password?",
-    "system_answer": "To reset your password, go to the login page and select the \"Forgot password\" link. Enter your registered email address, and AR HR will send a password reset message to that address. Note that the reset link will remain valid for 30 minutes.",
+    "system_answer": "To reset your password, go to the login page and select the \"Forgot password\" link. Enter your registered email address, and AR HR will send a password reset message to that address.",
     "chunks_related": [
       {
         "chunk_id": "chunk_003",
@@ -17,7 +17,7 @@
   },
   {
     "user_question": "How should an employee submit a work expense?",
-    "system_answer": "An employee should submit a work expense by opening Expenses, selecting New Expense, completing the required fields, attaching the receipt, and submitting the record for review.",
+    "system_answer": "An employee should submit a work expense by opening Expenses, selecting New Expense, completing the required fields, attaching the receipt, and then submitting the record for review.",
     "chunks_related": [
       {
         "chunk_id": "chunk_018",
@@ -32,18 +32,18 @@
     ]
   },
   {
-    "user_question": "How can a customer contact AR HR support?",
-    "system_answer": "A customer can contact AR HR support using the in-application chat or by sending an email to support@arhr.example.",
+    "user_question": "Where can employees find information about their salary payments?",
+    "system_answer": "Employees can find information about their salary payments in their monthly payslips, which become available on the last business day of each month. They can access previous payslips by opening Payroll and selecting Payslips, where they can filter the list by year and month.",
     "chunks_related": [
       {
-        "chunk_id": "chunk_029",
-        "section": "Customer Support",
-        "text": "AR HR support is available Monday through Friday from 9:00 to 18:00 GMT-3, excluding published holidays. Customers can use the in-application chat or send an email to support@arhr.example.\n\nA support request should include a clear description of the problem, the affected feature, relevant timestamps, steps already attempted, and screenshots that do not expose sensitive information.\n\nBusiness plan customers have an initial response target of four business hours. Enterprise customers have an initial response target of one business hour. These targets indicate the expected time to the first response and do not guarantee complete resolution within that period.\n\nUrgent priority should be used when many users cannot access a critical function, payroll processing is blocked, or a security incident is suspected. General questions, minor display problems, and noncritical issues affecting a single user should use normal priority."
+        "chunk_id": "chunk_007",
+        "section": "Payroll and Payslips",
+        "text": "Monthly payslips become available on the last business day of each month. AR HR notifies employees when a new document has been published. The publication of a payslip does not necessarily mean that the bank transfer has already been completed.\n\nEmployees can access previous documents by opening Payroll and selecting Payslips. The list can be filtered by year and month. Selecting Download PDF creates a local copy of the chosen document. AR HR retains published payslips for five years. Missing or older documents must be requested from the payroll administrator."
       },
       {
-        "chunk_id": "chunk_001",
-        "section": "Introduction",
-        "text": "AR HR SUPPORT AND OPERATIONS GUIDE\n\nThis guide describes the principal policies, procedures, and features available in AR HR. It is intended for employees, managers, company administrators, payroll teams, and support personnel. Company-specific policies may override some default platform settings, but the procedures described here represent the standard AR HR configuration."
+        "chunk_id": "chunk_009",
+        "section": "Payroll and Payslips",
+        "text": "A suspected salary error must be reported through a support request using the Payroll category. The request should be created within five business days of receiving the payment and should identify the affected payroll period. Employees must not include complete banking credentials, passwords, or other unnecessary sensitive information.\n\nThe payroll team reviews the published payslip, approved changes, deductions, and payment record. Resolution time depends on the cause of the discrepancy and whether an external bank or payroll provider must be contacted."
       }
     ]
   }

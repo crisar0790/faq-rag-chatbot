@@ -16,7 +16,10 @@ OUTPUT_PATH = SAMPLE_OUTPUT_PATH
 SAMPLE_QUESTIONS = [
     "How can I reset my password?",
     "How should an employee submit a work expense?",
-    "How can a customer contact AR HR support?",
+    (
+        "Where can employees find information "
+        "about their salary payments?"
+    ),
 ]
 
 
