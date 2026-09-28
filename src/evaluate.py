@@ -14,6 +14,11 @@ from src.config import (
     get_max_output_tokens,
     get_openai_client,
 )
+from src.constants import (
+    DEFAULT_RETRIEVAL_RESULTS,
+    EVALUATOR_MAX_OUTPUT_TOKENS,
+)
+from src.errors import format_error
 from src.evaluation_dataset import (
     DEFAULT_DATASET_PATH,
     load_evaluation_dataset,
@@ -187,7 +192,7 @@ def _request_evaluation(
             answer,
             chunks,
         ),
-        max_output_tokens=300,
+        max_output_tokens=EVALUATOR_MAX_OUTPUT_TOKENS,
         text={
             "format": {
                 "type": "json_schema",

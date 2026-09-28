@@ -17,6 +17,8 @@ from src.evaluate import (
 
 from argparse import Namespace
 
+from src.constants import EVALUATOR_MAX_OUTPUT_TOKENS
+
 def test_build_evaluation_input():
     result = build_evaluation_input(
         question="How can I reset my password?",
@@ -209,6 +211,11 @@ def test_evaluate_answer_returns_score_and_reason():
 
     request = client.responses.last_request
     schema = request["text"]["format"]["schema"]
+
+    assert (
+        request["max_output_tokens"]
+        == EVALUATOR_MAX_OUTPUT_TOKENS
+    )
 
     assert schema["properties"]["score"]["minimum"] == 0
     assert schema["properties"]["score"]["maximum"] == 10

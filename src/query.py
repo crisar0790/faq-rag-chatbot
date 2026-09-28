@@ -2,11 +2,10 @@
 
 import argparse
 import json
-from pathlib import Path
-from typing import Any
 import sys
 from collections.abc import Callable
-from src.constants import DEFAULT_RETRIEVAL_RESULTS
+from pathlib import Path
+from typing import Any
 
 from src.config import (
     INDEX_PATH,
@@ -15,14 +14,15 @@ from src.config import (
     get_max_output_tokens,
     get_openai_client,
 )
+from src.constants import DEFAULT_RETRIEVAL_RESULTS
 from src.embeddings import generate_embeddings
+from src.errors import format_error
 from src.rag_service import answer_question
 from src.retrieval import search_similar_chunks
 from src.vector_store import (
     load_index,
     validate_index_model,
 )
-from src.errors import format_error
 
 DEFAULT_INDEX_PATH = INDEX_PATH
 DEFAULT_TOP_K = DEFAULT_RETRIEVAL_RESULTS

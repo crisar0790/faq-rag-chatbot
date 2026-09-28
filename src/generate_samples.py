@@ -1,10 +1,10 @@
 """Generate reproducible sample outputs from the RAG pipeline."""
 
 import json
+import sys
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
-import sys
 
 from src.config import SAMPLE_OUTPUT_PATH
 from src.errors import format_error
