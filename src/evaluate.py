@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -63,6 +64,35 @@ EVALUATION_SCHEMA = {
 
 PASSING_SCORE = 7
 MIN_REASON_LENGTH = 50
+
+WORD_PATTERN = re.compile(r"[a-z0-9]+")
+
+QUERY_STOPWORDS = {
+    "about",
+    "after",
+    "again",
+    "also",
+    "available",
+    "does",
+    "employee",
+    "employees",
+    "from",
+    "have",
+    "into",
+    "their",
+    "them",
+    "they",
+    "this",
+    "through",
+    "user",
+    "users",
+    "what",
+    "when",
+    "where",
+    "which",
+    "with",
+    "would",
+}
 
 def load_evaluator_prompt(path: Path = EVALUATOR_PROMPT_PATH) -> str:
     """Load and validate the prompt used by the answer evaluator."""
@@ -311,62 +341,159 @@ def _find_expected_section_rank(
 def _build_case_result(
     evaluation_case: dict[str, str],
     rag_output: dict[str, Any],
-    retrieved_sections: list[str],
-    retrieval_rank: int | None,
-    relevant_chunk_count: int,
-    section_precision_at_k: float,
+    retrieval_metrics: dict[str, Any],
     answer_evaluation: dict[str, Any],
 ) -> dict[str, Any]:
     """Build the persisted result for one evaluation case."""
-    retrieval_passed = retrieval_rank is not None
-    answer_passed = answer_evaluation["score"] >= PASSING_SCORE
+    answer_passed = (
+        answer_evaluation["score"] >= PASSING_SCORE
+    )
+    retrieval_passed = retrieval_metrics[
+        "retrieval_passed"
+    ]
 
     return {
         "id": evaluation_case["id"],
         "question": evaluation_case["question"],
         "expected_section": evaluation_case["expected_section"],
-        "retrieved_sections": retrieved_sections,
-        "retrieval_rank": retrieval_rank,
-        "retrieval_top_1_passed": retrieval_rank == 1,
-        "retrieval_passed": retrieval_passed,
-        "retrieved_chunk_count": len(rag_output["chunks_related"]),
-        "relevant_chunk_count": relevant_chunk_count,
-        "section_precision_at_k": section_precision_at_k,
+        **retrieval_metrics,
         "system_answer": rag_output["system_answer"],
         "answer_evaluation": answer_evaluation,
         "answer_passed": answer_passed,
         "passed": retrieval_passed and answer_passed,
     }
 
+def _normalize_keyword(token: str) -> str:
+    """Normalize common English word endings."""
+    suffixes = ("ing", "ed", "es", "s", "ly")
+
+    for suffix in suffixes:
+        if (
+            token.endswith(suffix)
+            and len(token) > len(suffix) + 3
+        ):
+            return token[:-len(suffix)]
+
+    return token
+
+
+def _extract_keywords(text: str) -> set[str]:
+    """Extract normalized meaningful words from text."""
+    return {
+        _normalize_keyword(token)
+        for token in WORD_PATTERN.findall(
+            text.casefold()
+        )
+        if (
+            len(token) >= 4
+            and token not in QUERY_STOPWORDS
+        )
+    }
+
+
+def _chunk_matches_keywords(
+    chunk: dict[str, Any],
+    question_keywords: set[str],
+) -> bool:
+    """Return whether a chunk shares question keywords."""
+    chunk_content = (
+        f"{chunk['section']} {chunk['text']}"
+    )
+    chunk_keywords = _extract_keywords(
+        chunk_content
+    )
+
+    return bool(
+        question_keywords & chunk_keywords
+    )
+
+
+def _count_keyword_or_section_matches(
+    evaluation_case: dict[str, str],
+    chunks: list[dict[str, Any]],
+) -> int:
+    """Count chunks matching section or question keywords."""
+    expected_section = evaluation_case[
+        "expected_section"
+    ]
+    question_keywords = _extract_keywords(
+        evaluation_case["question"]
+    )
+
+    return sum(
+        chunk["section"] == expected_section
+        or _chunk_matches_keywords(
+            chunk,
+            question_keywords,
+        )
+        for chunk in chunks
+    )
+
+def _count_section_matches(
+    chunks: list[dict[str, Any]],
+    expected_section: str,
+) -> int:
+    """Count chunks from the expected section."""
+    return sum(
+        chunk["section"] == expected_section
+        for chunk in chunks
+    )
+
+def _build_retrieval_metrics(
+    chunks: list[dict[str, Any]],
+    retrieved_sections: list[str],
+    retrieval_rank: int | None,
+    section_matches: int,
+    keyword_matches: int,
+) -> dict[str, Any]:
+    """Build retrieval metrics for one case."""
+    total = len(chunks)
+
+    return {
+        "retrieved_sections": retrieved_sections,
+        "retrieval_rank": retrieval_rank,
+        "retrieval_top_1_passed": retrieval_rank == 1,
+        "retrieval_passed": retrieval_rank is not None,
+        "retrieved_chunk_count": total,
+        "relevant_chunk_count": section_matches,
+        "section_precision_at_k": _calculate_ratio(
+            section_matches, total
+        ),
+        "keyword_or_section_relevant_count": keyword_matches,
+        "keyword_or_section_precision_at_k": _calculate_ratio(
+            keyword_matches, total
+        ),
+    }
+
 def _evaluate_retrieval(
     evaluation_case: dict[str, str],
     chunks: list[dict[str, Any]],
-) -> tuple[list[str], int | None, int, float]:
+) -> dict[str, Any]:
     """Calculate retrieval metrics for one case."""
     expected_section = evaluation_case[
         "expected_section"
     ]
-    retrieved_sections = _get_retrieved_sections(
-        chunks
-    )
     retrieval_rank = _find_expected_section_rank(
-        chunks=chunks,
-        expected_section=expected_section,
+        chunks,
+        expected_section,
     )
-    relevant_chunk_count = sum(
-        chunk["section"] == expected_section
-        for chunk in chunks
+    section_matches = _count_section_matches(
+        chunks,
+        expected_section,
     )
-    section_precision_at_k = round(
-        relevant_chunk_count / len(chunks),
-        4,
+    keyword_matches = (
+        _count_keyword_or_section_matches(
+            evaluation_case,
+            chunks,
+        )
     )
 
-    return (
-        retrieved_sections,
-        retrieval_rank,
-        relevant_chunk_count,
-        section_precision_at_k,
+    return _build_retrieval_metrics(
+        chunks=chunks,
+        retrieved_sections=_get_retrieved_sections(chunks),
+        retrieval_rank=retrieval_rank,
+        section_matches=section_matches,
+        keyword_matches=keyword_matches,
     )
 
 def evaluate_case(
@@ -384,7 +511,7 @@ def evaluate_case(
         embedding_model, llm_model,
         max_output_tokens, top_k,
     )
-    retrieval = _evaluate_retrieval(
+    retrieval_metrics = _evaluate_retrieval(
         evaluation_case,
         rag_output["chunks_related"],
     )
@@ -395,7 +522,7 @@ def evaluate_case(
     return _build_case_result(
         evaluation_case,
         rag_output,
-        *retrieval,
+        retrieval_metrics,
         answer_evaluation,
     )
 
@@ -457,6 +584,11 @@ def build_summary(
         "section_precision_at_k",
     )
 
+    mean_keyword_precision = _average_metric(
+        results,
+        "keyword_or_section_precision_at_k",
+    )
+
     return {
         "total_cases": total,
         "retrieval_top_1_passed": top_1,
@@ -464,13 +596,11 @@ def build_summary(
         "retrieval_passed": retrieval,
         "retrieval_accuracy": _calculate_ratio(retrieval, total),
         "mean_section_precision_at_k": mean_precision,
+        "mean_keyword_or_section_precision_at_k": mean_keyword_precision,
         "answer_passed": answers,
         "answer_accuracy": _calculate_ratio(answers, total),
         "fully_passed": fully_passed,
-        "overall_accuracy": _calculate_ratio(
-            fully_passed,
-            total,
-        ),
+        "overall_accuracy": _calculate_ratio(fully_passed,total),
     }
 
 def _select_evaluation_cases(

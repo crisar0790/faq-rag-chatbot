@@ -44,6 +44,7 @@ def test_build_summary():
             "retrieval_rank": 1,
             "retrieval_passed": True,
             "section_precision_at_k": 0.6667,
+            "keyword_or_section_precision_at_k": 1.0,
             "answer_passed": True,
             "passed": True,
         },
@@ -51,6 +52,7 @@ def test_build_summary():
             "retrieval_rank": 2,
             "retrieval_passed": True,
             "section_precision_at_k": 0.3333,
+            "keyword_or_section_precision_at_k": 0.6667,
             "answer_passed": False,
             "passed": False,
         },
@@ -58,6 +60,7 @@ def test_build_summary():
             "retrieval_rank": None,
             "retrieval_passed": False,
             "section_precision_at_k": 0.0,
+            "keyword_or_section_precision_at_k": 0.3333,
             "answer_passed": True,
             "passed": False,
         },
@@ -72,6 +75,7 @@ def test_build_summary():
         "retrieval_passed": 2,
         "retrieval_accuracy": 0.6667,
         "mean_section_precision_at_k": 0.3333,
+        "mean_keyword_or_section_precision_at_k": 0.6667,
         "answer_passed": 2,
         "answer_accuracy": 0.6667,
         "fully_passed": 1,
@@ -87,12 +91,15 @@ def test_evaluate_retrieval_calculates_precision_at_k():
     chunks = [
         {
             "section": "Account Access",
+            "text": "Password reset instructions.",
         },
         {
             "section": "Account Access",
+            "text": "Account recovery details.",
         },
         {
             "section": "Data Privacy",
+            "text": "Password security guidance.",
         },
     ]
 
@@ -101,15 +108,20 @@ def test_evaluate_retrieval_calculates_precision_at_k():
         chunks,
     )
 
-    assert result == (
-        [
+    assert result == {
+        "retrieved_sections": [
             "Account Access",
             "Data Privacy",
         ],
-        1,
-        2,
-        0.6667,
-    )
+        "retrieval_rank": 1,
+        "retrieval_top_1_passed": True,
+        "retrieval_passed": True,
+        "retrieved_chunk_count": 3,
+        "relevant_chunk_count": 2,
+        "section_precision_at_k": 0.6667,
+        "keyword_or_section_relevant_count": 3,
+        "keyword_or_section_precision_at_k": 1.0,
+    }
 
 class FakeResponsesAPI:
     def __init__(self, response):
