@@ -133,6 +133,26 @@ def _validate_stored_embedding(
             "Stored embeddings must contain finite numbers."
         )
 
+def _validate_stored_text_fields(chunk: dict[str, Any]) -> None:
+    """Validate the public text fields of a stored chunk."""
+    for field in ("chunk_id", "section", "text"):
+        value = chunk[field]
+
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(
+                f"Stored chunk field '{field}' "
+                "must not be blank."
+            )
+
+
+def _validate_stored_token_count(token_count: Any) -> None:
+    """Validate a stored chunk token count."""
+    if type(token_count) is not int or token_count <= 0:
+        raise ValueError(
+            "Stored chunk token_count must be "
+            "a positive integer."
+        )
+
 def _validate_stored_chunk(chunk: Any, expected_dimension: int) -> str:
     """Validate one stored chunk and return its identifier."""
     if not isinstance(chunk, dict):
@@ -145,21 +165,10 @@ def _validate_stored_chunk(chunk: Any, expected_dimension: int) -> str:
             "A stored chunk has missing or unexpected fields."
         )
 
-    for field in ("chunk_id", "section", "text"):
-        value = chunk[field]
-
-        if not isinstance(value, str) or not value.strip():
-            raise ValueError(
-                f"Stored chunk field '{field}' must not be blank."
-            )
-
-    token_count = chunk["token_count"]
-
-    if type(token_count) is not int or token_count <= 0:
-        raise ValueError(
-            "Stored chunk token_count must be a positive integer."
-        )
-
+    _validate_stored_text_fields(chunk)
+    _validate_stored_token_count(
+        chunk["token_count"]
+    )
     _validate_stored_embedding(
         chunk["embedding"],
         expected_dimension,

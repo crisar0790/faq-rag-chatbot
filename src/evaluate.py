@@ -96,28 +96,19 @@ def build_evaluation_input(question: str, answer: str, chunks: list[dict[str, An
         f"{answer}"
     )
 
-def validate_evaluation_result(evaluation: Any) -> dict[str, Any]:
-    """Validate the score and reason returned by the evaluator."""
-    if not isinstance(evaluation, dict):
-        raise ValueError(
-            "The evaluation result must be an object."
-        )
-
-    if set(evaluation) != {"score", "reason"}:
-        raise ValueError(
-            "The evaluation result must contain exactly "
-            "score and reason."
-        )
-
-    score = evaluation["score"]
-    reason = evaluation["reason"]
-
+def _validate_evaluation_score(score: Any) -> int:
+    """Validate and return an evaluator score."""
     if type(score) is not int or not 0 <= score <= 10:
         raise ValueError(
             "The evaluation score must be an integer "
             "between 0 and 10."
         )
 
+    return score
+
+
+def _validate_evaluation_reason(reason: Any) -> str:
+    """Validate and normalize an evaluator reason."""
     if not isinstance(reason, str):
         raise ValueError(
             "The evaluation reason must be a string."
@@ -131,9 +122,28 @@ def validate_evaluation_result(evaluation: Any) -> dict[str, Any]:
             "least 50 characters."
         )
 
+    return clean_reason
+
+def validate_evaluation_result(evaluation: Any) -> dict[str, Any]:
+    """Validate the score and reason returned by the evaluator."""
+    if not isinstance(evaluation, dict):
+        raise ValueError(
+            "The evaluation result must be an object."
+        )
+
+    if set(evaluation) != {"score", "reason"}:
+        raise ValueError(
+            "The evaluation result must contain exactly "
+            "score and reason."
+        )
+
     return {
-        "score": score,
-        "reason": clean_reason,
+        "score": _validate_evaluation_score(
+            evaluation["score"]
+        ),
+        "reason": _validate_evaluation_reason(
+            evaluation["reason"]
+        ),
     }
 
 def _request_evaluation(
