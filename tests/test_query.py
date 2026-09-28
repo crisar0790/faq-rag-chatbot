@@ -1,11 +1,14 @@
 from unittest.mock import Mock
 
 from src.query import (
+    DEFAULT_TOP_K,
     create_query_embedding,
     retrieve_chunks,
     create_query_runner,
 )
 
+def test_default_top_k_uses_two_chunks():
+    assert DEFAULT_TOP_K == 2
 
 def test_create_query_embedding(monkeypatch):
     client = Mock()

@@ -92,7 +92,10 @@ def _build_argument_parser() -> argparse.ArgumentParser:
         "--top-k",
         type=int,
         default=DEFAULT_TOP_K,
-        help="Number of chunks to retrieve. Default: 3",
+        help=(
+            "Number of chunks to retrieve. "
+            f"Default: {DEFAULT_TOP_K}"
+        ),
     )
 
     return parser
