@@ -336,7 +336,8 @@ The evaluation process measures:
 
 - Top-1 retrieval accuracy.
 - Retrieval accuracy within the configured `top_k`.
-- Section precision at k.
+- Strict section precision at k.
+- Keyword-or-section precision at k.
 - Answer groundedness.
 - Answer relevance.
 - Answer completeness.
@@ -357,16 +358,22 @@ evaluation/report.json
 | Top-1 retrieval accuracy | 100% |
 | Retrieval accuracy at top-2 | 100% |
 | Mean section precision at top-2 | 76.92% |
+| Mean keyword-or-section precision at top-2 | 92.31% |
 | Answer accuracy | 100% |
 | Overall accuracy | 100% |
 
 The expected section ranks first for all 13 evaluation questions and appears within the top two retrieved chunks in every case.
 
-The section precision metric uses section equality as a strict and reproducible proxy for relevance. Of the 26 chunks retrieved across the evaluation dataset, 20 belong to the expected section. Chunks from other sections may still contain semantically useful context, so this metric should not be interpreted as a complete semantic relevance judgment.
+Two complementary retrieval precision metrics are reported:
 
-Using two chunks improved mean section precision from 56.41% at `top_k=3` to 76.92% at `top_k=2`, while preserving retrieval and answer accuracy.
+- `section_precision_at_k` counts only chunks belonging to the expected section. This strict metric classifies 20 of the 26 retrieved chunks as relevant, producing 76.92% precision.
+- `keyword_or_section_precision_at_k` also counts chunks from another section when they contain a meaningful normalized keyword from the question. This rubric-aligned metric classifies 24 of the 26 retrieved chunks as relevant, producing 92.31% precision.
 
-All 13 generated answers pass the configured evaluation threshold. The answer scores range from 7 to 10, using a passing score of 7.
+The keyword comparison removes common words and normalizes frequent English suffixes before checking overlap. It is deterministic and does not use a language model.
+
+Using two chunks improved strict section precision from 56.41% at `top_k=3` to 76.92% at `top_k=2`, while preserving top-1 retrieval accuracy and answer accuracy.
+
+All 13 generated answers pass the configured evaluation threshold. The answer scores range from 9 to 10 in the current report, using a passing score of 7.
 
 Answer quality is evaluated by a language model, so answer scores and aggregate results may vary slightly between executions. The authoritative results for a particular run are stored in `evaluation/report.json`.
 
@@ -486,7 +493,8 @@ In-domain question?
 - The system requires an OpenAI API key.
 - Evaluation by a language model is not completely deterministic.
 - The current dataset is designed for demonstration rather than production use.
-- Section precision treats only chunks from the expected section as relevant, even though chunks from other sections may provide useful context.
+- Strict section precision treats only chunks from the expected section as relevant, even though chunks from other sections may provide useful context.
+- Keyword-or-section precision measures lexical overlap and does not guarantee that every matching chunk answers the question directly.
 - Exact retrieval does not currently apply a minimum similarity threshold.
 - Sentence splitting uses punctuation-based rules and may not handle every abbreviation perfectly.
 
