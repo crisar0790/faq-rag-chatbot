@@ -146,6 +146,27 @@ def validate_evaluation_result(evaluation: Any) -> dict[str, Any]:
         ),
     }
 
+def _build_evaluation_messages(
+    question: str,
+    answer: str,
+    chunks: list[dict[str, Any]],
+) -> list[dict[str, str]]:
+    """Build the system and user messages for evaluation."""
+    return [
+        {
+            "role": "system",
+            "content": load_evaluator_prompt(),
+        },
+        {
+            "role": "user",
+            "content": build_evaluation_input(
+                question,
+                answer,
+                chunks,
+            ),
+        },
+    ]
+
 def _request_evaluation(
     question: str,
     answer: str,
@@ -156,20 +177,11 @@ def _request_evaluation(
     """Request a structured evaluation from OpenAI."""
     return client.responses.create(
         model=model,
-        input=[
-            {
-                "role": "system",
-                "content": load_evaluator_prompt(),
-            },
-            {
-                "role": "user",
-                "content": build_evaluation_input(
-                    question,
-                    answer,
-                    chunks,
-                ),
-            },
-        ],
+        input=_build_evaluation_messages(
+            question,
+            answer,
+            chunks,
+        ),
         max_output_tokens=300,
         text={
             "format": {
@@ -300,6 +312,21 @@ def _build_case_result(
         "passed": retrieval_passed and answer_passed,
     }
 
+def _evaluate_retrieval(
+    evaluation_case: dict[str, str],
+    chunks: list[dict[str, Any]],
+) -> tuple[list[str], bool]:
+    """Return retrieved sections and whether the expected one appears."""
+    retrieved_sections = _get_retrieved_sections(
+        chunks
+    )
+    retrieval_passed = (
+        evaluation_case["expected_section"]
+        in retrieved_sections
+    )
+
+    return retrieved_sections, retrieval_passed
+
 def evaluate_case(
     evaluation_case: dict[str, str],
     index: dict[str, Any],
@@ -315,12 +342,9 @@ def evaluate_case(
         embedding_model, llm_model,
         max_output_tokens, top_k,
     )
-    retrieved_sections = _get_retrieved_sections(
-        rag_output["chunks_related"]
-    )
-    retrieval_passed = (
-        evaluation_case["expected_section"]
-        in retrieved_sections
+    retrieved_sections, retrieval_passed = _evaluate_retrieval(
+        evaluation_case,
+        rag_output["chunks_related"],
     )
     answer_evaluation = evaluate_rag_output(
         rag_output=rag_output,
@@ -438,6 +462,19 @@ def _save_report(
         encoding="utf-8",
     )
 
+def _load_evaluation_index(
+    index_path: Path,
+) -> dict[str, Any]:
+    """Load an index compatible with the configured embedding model."""
+    index = load_index(index_path)
+
+    validate_index_model(
+        index,
+        get_embedding_model(),
+    )
+
+    return index
+
 def run_evaluation(
     dataset_path: Path,
     index_path: Path,
@@ -450,14 +487,9 @@ def run_evaluation(
         load_evaluation_dataset(dataset_path),
         limit,
     )
-    index = load_index(index_path)
-    validate_index_model(
-        index,
-        get_embedding_model(),
-    )
     results = _evaluate_cases(
         dataset=dataset,
-        index=index,
+        index=_load_evaluation_index(index_path),
         client=get_openai_client(),
         top_k=top_k,
     )
