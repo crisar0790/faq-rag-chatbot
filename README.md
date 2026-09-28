@@ -347,17 +347,16 @@ evaluation/report.json
 | Metric | Result |
 |---|---:|
 | Total evaluation cases | 13 |
-| Retrieval accuracy | 100% |
+| Top-1 retrieval accuracy | 100% |
+| Retrieval accuracy at top-3 | 100% |
 | Answer accuracy | 100% |
 | Overall accuracy | 100% |
 
-The retrieval system finds the expected document section in all 13 evaluation cases.
+The expected section ranks first for all 13 evaluation questions and appears within the top three retrieved chunks in every case.
 
-Answer quality is evaluated on a scale from 0 to 10 using three dimensions: groundedness, relevance, and completeness. An answer passes when it receives a score of 7 or higher.
+All 13 generated answers pass the configured evaluation threshold. The answer scores range from 7 to 10, using a passing score of 7.
 
-All 13 generated answers currently meet the passing threshold, and all 13 end-to-end evaluation cases pass both the retrieval and answer-quality criteria.
-
-Because answer quality is assessed by a language model, individual scores and explanations may vary slightly between executions. The authoritative results for each evaluation run are stored in `evaluation/report.json`.
+Answer quality is evaluated by a language model, so answer scores and aggregate results may vary slightly between executions. The authoritative results for a particular run are stored in `evaluation/report.json`.
 
 ## Error Handling
 
