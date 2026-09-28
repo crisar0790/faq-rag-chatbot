@@ -570,9 +570,7 @@ def _average_metric(
         4,
     )
 
-def build_summary(
-    results: list[dict[str, Any]],
-) -> dict[str, Any]:
+def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     """Calculate retrieval, answer, and overall metrics."""
     total = len(results)
     top_1 = _count_top_1_retrievals(results)
