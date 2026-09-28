@@ -66,21 +66,23 @@ Every successful query returns exactly three top-level fields:
 ```json
 {
   "user_question": "How can I reset my password?",
-  "system_answer": "Employees can request a password reset from the login page. The reset link remains valid for 30 minutes.",
+  "system_answer": "To reset your password, select the Forgot password link on the login page and enter your registered email address. The reset link remains valid for 30 minutes.",
   "chunks_related": [
-    {
-      "chunk_id": "chunk_002",
-      "section": "Account Access and Password Recovery",
-      "text": "Employees can request a password reset from the login page."
-    },
     {
       "chunk_id": "chunk_003",
       "section": "Account Access and Password Recovery",
-      "text": "Password reset links remain valid for 30 minutes."
+      "text": "When a reset email does not arrive, the employee should first check the spam or junk folder and confirm that the correct email address was entered."
+    },
+    {
+      "chunk_id": "chunk_002",
+      "section": "Account Access and Password Recovery",
+      "text": "An employee who forgets a password can begin the recovery process from the login page. The employee must select the Forgot password link and enter the registered email address."
     }
   ]
 }
 ```
+
+The chunk text shown above uses shortened excerpts from the real indexed chunks for readability. Complete generated examples are stored in `outputs/sample_queries.json`.
 
 Internal information such as embeddings, token counts, and similarity scores is not exposed in the public response.
 
@@ -244,7 +246,9 @@ python -m src.query \
   --top-k 4
 ```
 
-The accepted `top_k` range is between 2 and 5.
+The default `top_k` value is 2. The accepted range is between 2 and 5.
+
+The default was selected after comparing evaluation runs with two and three retrieved chunks. Using two chunks reduced retrieval noise while preserving 100% top-1 retrieval accuracy and answer accuracy on the current evaluation dataset.
 
 ## Generate Sample Outputs
 
@@ -330,7 +334,9 @@ python -m src.evaluate
 
 The evaluation process measures:
 
-- Retrieval accuracy.
+- Top-1 retrieval accuracy.
+- Retrieval accuracy within the configured `top_k`.
+- Section precision at k.
 - Answer groundedness.
 - Answer relevance.
 - Answer completeness.
@@ -347,12 +353,18 @@ evaluation/report.json
 | Metric | Result |
 |---|---:|
 | Total evaluation cases | 13 |
+| Retrieved chunks per question | 2 |
 | Top-1 retrieval accuracy | 100% |
-| Retrieval accuracy at top-3 | 100% |
+| Retrieval accuracy at top-2 | 100% |
+| Mean section precision at top-2 | 76.92% |
 | Answer accuracy | 100% |
 | Overall accuracy | 100% |
 
-The expected section ranks first for all 13 evaluation questions and appears within the top three retrieved chunks in every case.
+The expected section ranks first for all 13 evaluation questions and appears within the top two retrieved chunks in every case.
+
+The section precision metric uses section equality as a strict and reproducible proxy for relevance. Of the 26 chunks retrieved across the evaluation dataset, 20 belong to the expected section. Chunks from other sections may still contain semantically useful context, so this metric should not be interpreted as a complete semantic relevance judgment.
+
+Using two chunks improved mean section precision from 56.41% at `top_k=3` to 76.92% at `top_k=2`, while preserving retrieval and answer accuracy.
 
 All 13 generated answers pass the configured evaluation threshold. The answer scores range from 7 to 10, using a passing score of 7.
 
@@ -433,7 +445,7 @@ The answer prompt instructs the model to:
 - The system requires an OpenAI API key.
 - Evaluation by a language model is not completely deterministic.
 - The current dataset is designed for demonstration rather than production use.
-- Retrieval evaluation currently checks whether the expected section appears among the retrieved chunks; it does not yet calculate precision at k.
+- Section precision treats only chunks from the expected section as relevant, even though chunks from other sections may provide useful context.
 - Exact retrieval does not currently apply a minimum similarity threshold.
 - Sentence splitting uses punctuation-based rules and may not handle every abbreviation perfectly.
 
